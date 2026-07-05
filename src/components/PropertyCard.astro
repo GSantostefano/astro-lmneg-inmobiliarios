@@ -1,0 +1,75 @@
+---
+import ListingImage from './ListingImage.astro';
+import type { Property } from '../data/properties';
+import { formatPrice, formatPropertyMeta, operationLabel, typeLabel } from '../lib/properties';
+import { buildPropertyWhatsAppLink } from '../lib/whatsapp';
+
+interface Props {
+  property: Property;
+  filterIndex?: number;
+}
+
+const { property, filterIndex } = Astro.props;
+const wspHref = buildPropertyWhatsAppLink(
+  property.title,
+  operationLabel(property.operation),
+  property.refCode,
+);
+---
+
+<article
+  class="property-card overflow-hidden rounded-2xl border border-brand-gray-200 bg-white shadow-sm transition hover:shadow-md"
+  data-index={filterIndex}
+  data-operation={property.operation}
+  data-type={property.type}
+  data-neighborhood={property.neighborhood}
+  data-currency={property.currency}
+  data-price={property.price}
+  data-rooms={property.rooms}
+>
+  <a href={`/propiedades/${property.slug}`} class="block no-underline">
+    <ListingImage
+      src={property.heroImage}
+      alt={property.title}
+      width={640}
+      height={380}
+      loading="lazy"
+      class="h-52 w-full object-cover"
+    />
+  </a>
+  <div class="p-5">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="rounded-full bg-brand-yellow px-2.5 py-0.5 text-xs font-semibold uppercase text-brand-gray-900">
+        {operationLabel(property.operation)}
+      </span>
+      <span class="text-xs font-medium text-brand-gray-500">{typeLabel(property.type)}</span>
+    </div>
+    <h3 class="mt-2 font-display text-lg font-bold text-brand-gray-900">
+      <a href={`/propiedades/${property.slug}`} class="no-underline hover:text-brand-gray-700">
+        {property.title}
+      </a>
+    </h3>
+    <p class="mt-1 text-sm text-brand-gray-500">
+      {formatPropertyMeta(property)}
+    </p>
+    <p class="mt-2 text-xl font-bold text-brand-gray-900">
+      {formatPrice(property.price, property.currency)}
+    </p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <a
+        href={`/propiedades/${property.slug}`}
+        class="inline-flex items-center rounded-lg bg-brand-gray-900 px-4 py-2 text-sm font-semibold text-white no-underline hover:bg-brand-gray-700"
+      >
+        Ver detalle
+      </a>
+      <a
+        href={wspHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-lg border border-brand-gray-200 bg-brand-gray-50 px-4 py-2 text-sm font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-soft"
+      >
+        Consultar
+      </a>
+    </div>
+  </div>
+</article>

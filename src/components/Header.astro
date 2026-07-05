@@ -1,0 +1,38 @@
+---
+import { SITE } from '../config/site';
+import BrandLogo from './BrandLogo.astro';
+
+const navLinks = [
+  { href: '/', label: 'Inicio' },
+  { href: '/propiedades', label: 'Propiedades' },
+  { href: '/nosotros', label: 'Nosotros' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contacto', label: 'Contacto' },
+];
+---
+
+<div class="border-b border-brand-gray-200 bg-brand-yellow-soft">
+  <div class="mx-auto max-w-6xl px-5 py-2 text-center text-xs text-brand-gray-700 md:text-left">
+    <span class="font-medium">{SITE.city}, {SITE.province}</span>
+    <span class="mx-2 hidden text-brand-gray-200 md:inline">|</span>
+    <span class="hidden md:inline">{SITE.addressLine} · {SITE.phoneDisplay}</span>
+  </div>
+</div>
+
+<header class="sticky top-0 z-30 border-b border-brand-gray-200 bg-white/95 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+    <BrandLogo />
+    <nav aria-label="Navegación principal" class="flex flex-wrap gap-4 text-sm font-medium">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-brand-gray-700 no-underline transition hover:text-brand-gray-900"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

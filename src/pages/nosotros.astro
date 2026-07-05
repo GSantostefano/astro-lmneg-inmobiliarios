@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ButtonLink from '../components/ui/ButtonLink.astro';
+import { SITE } from '../config/site';
+
+const phoneTel = `+54${SITE.phone}`;
+---
+
+<BaseLayout title={`Nosotros | ${SITE.name}`} description={`Conocé a ${SITE.name}, ${SITE.subtitle} en Paraná.`}>
+  <section class="bg-brand-yellow-soft px-5 py-12">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-gray-500">Quiénes somos</p>
+      <h1 class="font-display mt-2 text-4xl font-bold text-brand-gray-900">{SITE.name}</h1>
+      <p class="mt-1 text-lg text-brand-gray-600">{SITE.subtitle}</p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-3xl px-5 py-12">
+    <p class="text-lg leading-relaxed text-brand-gray-700">
+      Somos <strong>{SITE.name}</strong>, {SITE.subtitle} con oficina en <strong>{SITE.addressLine}</strong>, {SITE.city}.
+      Nos especializamos en la intermediación de compra, venta y alquiler de departamentos y casas, con foco en
+      entender las necesidades de cada cliente y acompañar a quienes invierten en bienes raíces.
+    </p>
+    <p class="mt-6 leading-relaxed text-brand-gray-600">
+      Conocemos el mercado de Paraná y sus barrios — Centro, Parque Urquiza, Microcentro, Barrio Norte, Villa Urquiza,
+      Semillero y más — para asesorarte con criterio en cada operación.
+    </p>
+
+    <article class="mt-10 rounded-2xl border border-brand-gray-200 bg-brand-yellow-soft p-6 md:p-8">
+      <h2 class="font-display text-xl font-bold text-brand-gray-900">Misión</h2>
+      <p class="mt-3 leading-relaxed text-brand-gray-700">{SITE.mission}</p>
+    </article>
+
+    <article class="mt-6 rounded-2xl border border-brand-gray-200 bg-white p-6 md:p-8 shadow-sm">
+      <h2 class="font-display text-xl font-bold text-brand-gray-900">Visión</h2>
+      <p class="mt-3 leading-relaxed text-brand-gray-700">{SITE.vision}</p>
+    </article>
+
+    <section class="mt-10">
+      <h2 class="font-display text-xl font-bold text-brand-gray-900">Valores</h2>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-3">
+        {
+          SITE.values.map((value) => (
+            <li class="rounded-xl border border-brand-gray-200 bg-brand-gray-50 px-4 py-5 text-center">
+              <span class="font-semibold text-brand-gray-900">{value}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <div class="mt-10 rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-6">
+      <p class="text-sm font-semibold text-brand-gray-900">Oficina</p>
+      <p class="mt-1 text-brand-gray-700">{SITE.address}</p>
+      <p class="mt-2 text-sm text-brand-gray-600">
+        <a href={`tel:${phoneTel}`} class="font-medium text-brand-gray-900 no-underline hover:underline">
+          {SITE.phoneDisplay}
+        </a>
+      </p>
+    </div>
+
+    <div class="mt-10">
+      <ButtonLink href="/contacto" label="Contactanos" />
+    </div>
+  </div>
+</BaseLayout>

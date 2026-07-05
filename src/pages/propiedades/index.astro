@@ -1,0 +1,211 @@
+---
+import PropertyCard from '../../components/PropertyCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../config/site';
+import { properties } from '../../data/properties';
+import { catalogHasOperation } from '../../lib/properties';
+
+const types = [...new Set(properties.map((p) => p.type))];
+const neighborhoods = [...new Set(properties.map((p) => p.neighborhood))].sort((a, b) =>
+  a.localeCompare(b, 'es'),
+);
+const showAlquilerFilter = catalogHasOperation('alquiler');
+---
+
+<BaseLayout
+  title={`Propiedades en ${SITE.city} | ${SITE.name}`}
+  description={`Catálogo de departamentos y casas en venta y alquiler en ${SITE.city}, ${SITE.province}.`}
+>
+  <section class="bg-brand-gray-900 px-5 py-12 text-white">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-yellow">Catálogo</p>
+      <h1 class="font-display mt-2 text-3xl font-bold md:text-4xl">Propiedades en Paraná</h1>
+      <p class="mt-3 max-w-2xl text-brand-gray-100">
+        Filtrá por operación, tipo, barrio y precio. Encontrá tu próximo departamento o casa en venta o alquiler.
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-5 py-8">
+    <section class="mb-6 rounded-2xl border border-brand-gray-200 bg-white p-4 shadow-sm">
+      <form id="filters-form" class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <label class="text-sm text-brand-gray-700">
+          Operación
+          <select name="operation" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="">Todas</option>
+            <option value="venta">Venta</option>
+            {showAlquilerFilter && <option value="alquiler">Alquiler</option>}
+          </select>
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Tipo
+          <select name="type" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="">Todos</option>
+            {types.map((type) => <option value={type}>{type}</option>)}
+          </select>
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Barrio
+          <select name="neighborhood" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="">Todos</option>
+            {neighborhoods.map((n) => <option value={n}>{n}</option>)}
+          </select>
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Moneda
+          <select name="currency" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="">Todas</option>
+            <option value="USD">USD</option>
+            <option value="ARS">ARS</option>
+          </select>
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Precio mínimo
+          <input name="minPrice" type="number" min="0" step="1000" placeholder="Ej: 50000" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Precio máximo
+          <input name="maxPrice" type="number" min="0" step="1000" placeholder="Ej: 200000" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Ambientes mínimos
+          <select name="rooms" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="">Cualquiera</option>
+            <option value="1">1+</option>
+            <option value="2">2+</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+          </select>
+        </label>
+        <label class="text-sm text-brand-gray-700">
+          Orden
+          <select name="sort" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2">
+            <option value="relevance">Relevancia</option>
+            <option value="price_asc">Precio ascendente</option>
+            <option value="price_desc">Precio descendente</option>
+          </select>
+        </label>
+      </form>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <button
+          id="clear-filters"
+          type="button"
+          class="rounded-lg border border-brand-gray-200 bg-brand-gray-50 px-3 py-2 text-sm font-semibold text-brand-gray-800 hover:bg-brand-yellow-soft"
+        >
+          Limpiar filtros
+        </button>
+        <p id="results-count" class="self-center text-sm text-brand-gray-500" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="properties-grid" class="grid gap-6 md:grid-cols-2">
+      {properties.map((property, index) => (
+        <PropertyCard property={property} filterIndex={index} />
+      ))}
+    </section>
+
+    <p
+      id="empty-state"
+      class="mt-6 hidden rounded-xl border border-brand-gray-200 bg-brand-yellow-soft p-5 text-brand-gray-700"
+      aria-live="polite"
+    >
+      No encontramos propiedades con esos filtros. Probá ajustar los criterios o limpiar los filtros.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector('#filters-form');
+  const clearBtn = document.querySelector('#clear-filters');
+  const cards = Array.from(document.querySelectorAll('.property-card'));
+  const grid = document.querySelector('#properties-grid');
+  const emptyState = document.querySelector('#empty-state');
+  const resultsCount = document.querySelector('#results-count');
+
+  const getParams = () => new URLSearchParams(window.location.search);
+
+  function readFiltersFromForm() {
+    if (!form) return {};
+    const data = new FormData(form);
+    return {
+      operation: (data.get('operation') || '').toString(),
+      type: (data.get('type') || '').toString(),
+      neighborhood: (data.get('neighborhood') || '').toString(),
+      currency: (data.get('currency') || '').toString(),
+      minPrice: (data.get('minPrice') || '').toString(),
+      maxPrice: (data.get('maxPrice') || '').toString(),
+      rooms: (data.get('rooms') || '').toString(),
+      sort: (data.get('sort') || 'relevance').toString(),
+    };
+  }
+
+  function writeFiltersToUrl(filters: Record<string, string>) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(filters)) {
+      if (value && value !== 'relevance') params.set(key, value);
+    }
+    const url = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    window.history.replaceState({}, '', url);
+  }
+
+  function loadFiltersFromUrl() {
+    if (!form) return;
+    const params = getParams();
+    for (const element of Array.from(form.elements)) {
+      if (!(element instanceof HTMLInputElement || element instanceof HTMLSelectElement)) continue;
+      const value = params.get(element.name);
+      if (value !== null) element.value = value;
+    }
+  }
+
+  function applyFilters() {
+    const filters = readFiltersFromForm();
+    writeFiltersToUrl(filters);
+
+    let visible = 0;
+    const sortedCards = [...cards];
+
+    sortedCards.sort((a, b) => {
+      const priceA = Number(a.dataset.price || 0);
+      const priceB = Number(b.dataset.price || 0);
+      const roomsA = Number(a.dataset.rooms || 0);
+      const roomsB = Number(b.dataset.rooms || 0);
+      if (filters.sort === 'price_asc') return priceA - priceB;
+      if (filters.sort === 'price_desc') return priceB - priceA;
+      return Number(a.dataset.index || 0) - Number(b.dataset.index || 0);
+    });
+
+    for (const card of sortedCards) {
+      const operationOk = !filters.operation || card.dataset.operation === filters.operation;
+      const typeOk = !filters.type || card.dataset.type === filters.type;
+      const neighborhoodOk = !filters.neighborhood || card.dataset.neighborhood === filters.neighborhood;
+      const currencyOk = !filters.currency || card.dataset.currency === filters.currency;
+      const price = Number(card.dataset.price || 0);
+      const minPriceOk = !filters.minPrice || price >= Number(filters.minPrice);
+      const maxPriceOk = !filters.maxPrice || price <= Number(filters.maxPrice);
+      const rooms = Number(card.dataset.rooms || 0);
+      const roomsOk = !filters.rooms || rooms >= Number(filters.rooms);
+      const isVisible = operationOk && typeOk && neighborhoodOk && currencyOk && minPriceOk && maxPriceOk && roomsOk;
+      card.classList.toggle('hidden', !isVisible);
+      if (isVisible) {
+        visible += 1;
+        grid?.appendChild(card);
+      }
+    }
+
+    if (resultsCount) resultsCount.textContent = `${visible} resultados encontrados`;
+    emptyState?.classList.toggle('hidden', visible > 0);
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    form?.reset();
+    const sort = form?.querySelector('select[name="sort"]');
+    if (sort instanceof HTMLSelectElement) sort.value = 'relevance';
+    applyFilters();
+  });
+
+  form?.addEventListener('input', applyFilters);
+  form?.addEventListener('change', applyFilters);
+  loadFiltersFromUrl();
+  applyFilters();
+</script>

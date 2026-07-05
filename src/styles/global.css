@@ -1,0 +1,31 @@
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/dm-sans/wght-italic.css';
+@import '@fontsource/playfair-display/600.css';
+@import '@fontsource/playfair-display/700.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-yellow: #f5c518;
+  --color-brand-yellow-dark: #d4a80f;
+  --color-brand-yellow-soft: #fff9e6;
+  --color-brand-gray-50: #f7f7f8;
+  --color-brand-gray-100: #ececee;
+  --color-brand-gray-200: #d8d8dc;
+  --color-brand-gray-500: #6b7280;
+  --color-brand-gray-700: #3f4654;
+  --color-brand-gray-900: #1f2430;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-brand-gray-900 antialiased;
+  font-family: 'DM Sans Variable', system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-yellow);
+  outline-offset: 2px;
+}

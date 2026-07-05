@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PropertyCard from '../components/PropertyCard.astro';
+import ButtonLink from '../components/ui/ButtonLink.astro';
+import { SITE, brandFull } from '../config/site';
+import { getFeaturedProperties } from '../lib/properties';
+import { buildWhatsAppLink } from '../lib/whatsapp';
+
+const featured = getFeaturedProperties();
+const wspGeneral = buildWhatsAppLink(
+  `Hola ${brandFull}, quiero asesoramiento para comprar o alquilar en ${SITE.city}.`,
+);
+
+const highlights = [
+  {
+    title: 'Intermediación profesional',
+    text: 'Compra, venta y alquiler con un servicio responsable y enfocado en tus necesidades.',
+  },
+  {
+    title: 'Oficina en Paraná',
+    text: `${SITE.addressLine}. Atención personalizada en el corazón de la ciudad.`,
+  },
+  {
+    title: 'Compromiso e integridad',
+    text: 'Trabajamos con profesionalismo para clientes e inversores en bienes raíces.',
+  },
+];
+---
+
+<BaseLayout title={`${SITE.name} | ${SITE.subtitle} en Paraná`}>
+  <section class="relative overflow-hidden bg-brand-gray-900 text-white">
+    <div
+      class="absolute inset-0 bg-[url('/assets/hero-home.jpg')] bg-cover bg-center opacity-25"
+      aria-hidden="true"
+    ></div>
+    <div class="relative mx-auto max-w-6xl px-5 py-16 md:py-24">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-yellow">Paraná · Entre Ríos</p>
+      <h1 class="font-display mt-3 max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
+        Tu próximo hogar en Paraná, con asesoramiento de confianza
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-brand-gray-100">
+        <strong>{SITE.name}</strong> te acompaña en la venta y alquiler de departamentos y casas en Paraná. Propiedades seleccionadas,
+        visitas coordinadas y trámites claros.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <ButtonLink href="/propiedades" label="Ver propiedades" />
+        <a
+          href={wspGeneral}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center rounded-lg border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white no-underline backdrop-blur hover:bg-white/20"
+        >
+          Consultar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-12">
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        highlights.map((item) => (
+          <article class="rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-6">
+            <div class="mb-3 h-1 w-10 rounded-full bg-brand-yellow"></div>
+            <h2 class="font-display text-lg font-bold text-brand-gray-900">{item.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-brand-gray-600">{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="bg-brand-yellow-soft py-12">
+    <div class="mx-auto max-w-6xl px-5">
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-brand-gray-500">Destacadas</p>
+          <h2 class="font-display mt-1 text-3xl font-bold text-brand-gray-900">Propiedades en Paraná</h2>
+        </div>
+        <ButtonLink href="/propiedades" label="Ver catálogo completo" variant="secondary" />
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+        {featured.map((property) => <PropertyCard property={property} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14">
+    <div class="rounded-2xl border border-brand-gray-200 bg-white p-8 md:flex md:items-center md:justify-between md:gap-8">
+      <div>
+        <h2 class="font-display text-2xl font-bold text-brand-gray-900">¿Vendés o alquilás tu propiedad?</h2>
+        <p class="mt-2 max-w-xl text-brand-gray-600">
+          Publicamos tu inmueble, gestionamos consultas y te acompañamos en cada paso del proceso en Paraná.
+        </p>
+      </div>
+      <ButtonLink href="/contacto" label="Contactanos" />
+    </div>
+  </section>
+</BaseLayout>

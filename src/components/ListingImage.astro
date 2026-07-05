@@ -1,0 +1,32 @@
+---
+/**
+ * Listados: <img> con ruta local o URL absoluta propia.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const {
+  src,
+  alt,
+  width = 900,
+  height = 600,
+  class: className = '',
+  loading = 'lazy',
+} = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  decoding="async"
+  class:list={[className]}
+/>

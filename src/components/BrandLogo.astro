@@ -1,0 +1,30 @@
+---
+import { SITE, brandFull } from '../config/site';
+
+interface Props {
+  size?: 'sm' | 'md';
+  showText?: boolean;
+}
+
+const { size = 'sm', showText = true } = Astro.props;
+const imgClass = size === 'md' ? 'h-16 max-h-16' : 'h-11 max-h-11';
+---
+
+<a href="/" class="group inline-flex items-center gap-3 no-underline">
+  <img
+    src={SITE.logoSrc}
+    alt={brandFull}
+    class:list={['w-auto shrink-0 object-contain', imgClass]}
+    decoding="async"
+  />
+  {
+    showText && (
+      <span>
+        <p class="font-display text-2xl font-bold tracking-tight text-brand-gray-900 group-hover:text-brand-gray-700">
+          {SITE.name}
+        </p>
+        <p class="text-xs font-medium tracking-wide text-brand-gray-500">{SITE.subtitle}</p>
+      </span>
+    )
+  }
+</a>
