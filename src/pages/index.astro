@@ -16,16 +16,16 @@ const wspGeneral = buildWhatsAppLink(
 
 const highlights = [
   {
-    title: 'Intermediación profesional',
-    text: 'Compra, venta y alquiler con un servicio responsable y enfocado en tus necesidades.',
+    title: 'Asesoramiento personalizado',
+    text: 'Entendemos tu búsqueda y te acompañamos en cada decisión.',
   },
   {
-    title: 'Oficina en Paraná',
-    text: `${SITE.addressLine}. Atención personalizada en el corazón de la ciudad.`,
+    title: 'Presencia en Paraná',
+    text: `${SITE.addressLine}. Atención cercana en el centro de la ciudad.`,
   },
   {
-    title: 'Compromiso e integridad',
-    text: 'Trabajamos con profesionalismo para clientes e inversores en bienes raíces.',
+    title: 'Profesionalismo real',
+    text: 'Transparencia, seriedad y seguimiento en venta y alquiler.',
   },
 ];
 ---
@@ -33,70 +33,71 @@ const highlights = [
 <BaseLayout title={`${SITE.name} | ${SITE.subtitle} en Paraná`}>
   <section class="relative overflow-hidden bg-brand-gray-900 text-white">
     <div
-      class="absolute inset-0 bg-[url('/assets/hero-home.jpg')] bg-cover bg-center opacity-25"
+      class="absolute inset-0 bg-[url('/assets/hero-home.jpg')] bg-cover bg-center opacity-40"
       aria-hidden="true"
     ></div>
-    <div class="relative mx-auto max-w-6xl px-5 py-16 md:py-24">
-      <p class="text-sm font-semibold uppercase tracking-widest text-brand-yellow">Paraná · Entre Ríos</p>
-      <h1 class="font-display mt-3 max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
-        Tu próximo hogar en Paraná, con asesoramiento de confianza
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-gray-900 via-brand-gray-900/90 to-brand-gray-900/55" aria-hidden="true"></div>
+    <div class="section-shell relative py-20 md:py-28">
+      <p class="section-kicker text-brand-yellow/90">{SITE.city} · {SITE.province}</p>
+      <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold leading-[1.1] md:text-6xl">
+        Tu próximo hogar en Paraná
       </h1>
-      <p class="mt-4 max-w-2xl font-display text-xl font-medium text-brand-yellow md:text-2xl">
+      <p class="mt-5 max-w-2xl font-display text-xl text-brand-yellow md:text-2xl">
         {SITE.slogan}
       </p>
-      <p class="mt-4 max-w-2xl text-lg text-brand-gray-100">
-        <strong>{SITE.name}</strong> te acompaña en la venta y alquiler de departamentos y casas en Paraná. Propiedades seleccionadas,
-        visitas coordinadas y trámites simples.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <ButtonLink href="/propiedades" label="Ver propiedades" />
-        <a
-          href={wspGeneral}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center rounded-lg border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white no-underline backdrop-blur hover:bg-white/20"
-        >
-          Consultar por WhatsApp
-        </a>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <ButtonLink href="/propiedades" label="Explorar propiedades" />
+        <ButtonLink href={wspGeneral} label="Consultar por WhatsApp" variant="ghost" external />
       </div>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-5 py-12">
-    <div class="grid gap-4 md:grid-cols-3">
+  <section class="border-b border-brand-gray-200 bg-white py-5">
+    <div class="section-shell flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-center text-sm text-brand-gray-600 md:justify-between md:text-left">
+      <span>Venta · Alquiler · Tasación</span>
+      <span class="hidden h-4 w-px bg-brand-gray-200 md:inline" aria-hidden="true"></span>
+      <span>{SITE.addressLine}</span>
+      <span class="hidden h-4 w-px bg-brand-gray-200 md:inline" aria-hidden="true"></span>
+      <span>Atención personalizada en {SITE.city}</span>
+    </div>
+  </section>
+
+  <section class="section-shell py-16 md:py-20">
+    <div class="grid gap-6 md:grid-cols-3">
       {
         highlights.map((item) => (
-          <article class="rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-6">
-            <div class="mb-3 h-1 w-10 rounded-full bg-brand-yellow"></div>
-            <h2 class="font-display text-lg font-bold text-brand-gray-900">{item.title}</h2>
-            <p class="mt-2 text-sm leading-relaxed text-brand-gray-600">{item.text}</p>
+          <article class="rounded-2xl bg-brand-gray-50 p-7">
+            <div class="mb-4 h-px w-12 bg-brand-yellow"></div>
+            <h2 class="font-display text-xl font-semibold text-brand-gray-900">{item.title}</h2>
+            <p class="mt-3 text-sm leading-relaxed text-brand-gray-600">{item.text}</p>
           </article>
         ))
       }
     </div>
   </section>
 
-  <section class="bg-brand-yellow-soft py-12">
-    <div class="mx-auto max-w-6xl px-5">
-      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+  <section class="bg-brand-gray-50 py-16 md:py-20">
+    <div class="section-shell">
+      <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-wide text-brand-gray-500">Destacadas</p>
-          <h2 class="font-display mt-1 text-3xl font-bold text-brand-gray-900">Propiedades en Paraná</h2>
+          <p class="section-kicker">Selección destacada</p>
+          <h2 class="section-title mt-2">Propiedades en {SITE.city}</h2>
         </div>
         <ButtonLink href="/propiedades" label="Ver catálogo completo" variant="secondary" />
       </div>
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+      <div class="grid gap-8 md:grid-cols-2">
         {featured.map((property) => <PropertyCard property={property} />)}
       </div>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-5 py-14">
-    <div class="rounded-2xl border border-brand-gray-200 bg-white p-8 md:flex md:items-center md:justify-between md:gap-8">
+  <section class="section-shell py-16 md:py-20">
+    <div class="card-premium flex flex-col gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
       <div>
-        <h2 class="font-display text-2xl font-bold text-brand-gray-900">¿Vendés o alquilás tu propiedad?</h2>
-        <p class="mt-2 max-w-xl text-brand-gray-600">
-          Publicamos tu inmueble, gestionamos consultas y te acompañamos en cada paso del proceso en Paraná.
+        <p class="section-kicker">Vendedores y propietarios</p>
+        <h2 class="font-display mt-2 text-2xl font-semibold text-brand-gray-900 md:text-3xl">¿Querés vender o alquilar?</h2>
+        <p class="mt-3 max-w-xl text-brand-gray-600">
+          Coordinamos publicación, consultas y visitas con un trato profesional en todo el proceso.
         </p>
       </div>
       <ButtonLink href="/contacto" label="Contactanos" />

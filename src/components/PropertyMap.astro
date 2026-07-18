@@ -17,7 +17,7 @@ const searchUrl = resolvePropertyMapUrl({ address, neighborhood, city, mapUrl, l
 const hasExactLocation = Boolean(mapUrl?.trim()) || (latitude != null && longitude != null) || Boolean(address?.trim());
 ---
 
-<section class="mt-8">
+<section class="mt-0">
   <h2 class="font-display text-xl font-bold text-brand-gray-900">Ubicación</h2>
   <p class="mt-1 text-sm text-brand-gray-600">
     {locationLabel}

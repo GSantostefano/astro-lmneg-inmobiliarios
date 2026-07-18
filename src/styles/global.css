@@ -8,12 +8,12 @@
   --color-brand-yellow: #f5c518;
   --color-brand-yellow-dark: #d4a80f;
   --color-brand-yellow-soft: #fff9e6;
-  --color-brand-gray-50: #f7f7f8;
-  --color-brand-gray-100: #ececee;
-  --color-brand-gray-200: #d8d8dc;
-  --color-brand-gray-500: #6b7280;
-  --color-brand-gray-700: #3f4654;
-  --color-brand-gray-900: #1f2430;
+  --color-brand-gray-50: #f8f7f5;
+  --color-brand-gray-100: #eeecea;
+  --color-brand-gray-200: #ddd9d2;
+  --color-brand-gray-500: #6b6560;
+  --color-brand-gray-700: #3d3a36;
+  --color-brand-gray-900: #1a1816;
 }
 
 html {
@@ -23,6 +23,22 @@ html {
 body {
   @apply bg-white text-brand-gray-900 antialiased;
   font-family: 'DM Sans Variable', system-ui, sans-serif;
+}
+
+.section-shell {
+  @apply mx-auto max-w-6xl px-5;
+}
+
+.section-title {
+  @apply font-display text-3xl font-semibold tracking-tight text-brand-gray-900 md:text-4xl;
+}
+
+.section-kicker {
+  @apply text-xs font-semibold uppercase tracking-[0.2em] text-brand-gray-500;
+}
+
+.card-premium {
+  @apply overflow-hidden rounded-2xl border border-brand-gray-200/80 bg-white shadow-[0_8px_30px_rgba(26,24,22,0.06)];
 }
 
 :focus-visible {
