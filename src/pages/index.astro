@@ -3,10 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PropertyCard from '../components/PropertyCard.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
 import { SITE, brandFull } from '../config/site';
-import { getFeaturedProperties } from '../lib/properties';
+import { getApiUrl } from '../lib/api';
+import { getWorkerEnv } from '../lib/cf-env';
+import { loadFeaturedProperties } from '../lib/catalog';
 import { buildWhatsAppLink } from '../lib/whatsapp';
 
-const featured = getFeaturedProperties();
+const apiUrl = getApiUrl(getWorkerEnv());
+const featured = await loadFeaturedProperties(apiUrl);
 const wspGeneral = buildWhatsAppLink(
   `Hola ${brandFull}, quiero asesoramiento para comprar o alquilar en ${SITE.city}.`,
 );
@@ -38,9 +41,12 @@ const highlights = [
       <h1 class="font-display mt-3 max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
         Tu próximo hogar en Paraná, con asesoramiento de confianza
       </h1>
+      <p class="mt-4 max-w-2xl font-display text-xl font-medium text-brand-yellow md:text-2xl">
+        {SITE.slogan}
+      </p>
       <p class="mt-4 max-w-2xl text-lg text-brand-gray-100">
         <strong>{SITE.name}</strong> te acompaña en la venta y alquiler de departamentos y casas en Paraná. Propiedades seleccionadas,
-        visitas coordinadas y trámites claros.
+        visitas coordinadas y trámites simples.
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <ButtonLink href="/propiedades" label="Ver propiedades" />

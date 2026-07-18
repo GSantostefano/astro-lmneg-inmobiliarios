@@ -1,14 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, brandFull } from '../config/site';
-import { buildWhatsAppLink } from '../lib/whatsapp';
-
-const wspGeneral = buildWhatsAppLink(
-  `Hola ${brandFull}, quiero consultar por una propiedad en ${SITE.city}.`,
-);
-const wspVender = buildWhatsAppLink(
-  `Hola ${brandFull}, quiero publicar mi propiedad en ${SITE.city} para vender o alquilar.`,
-);
 ---
 
 <BaseLayout title={`Contacto | ${SITE.name}`} description={`Contactá a ${SITE.name} en Paraná por WhatsApp o formulario.`}>
@@ -19,8 +11,8 @@ const wspVender = buildWhatsAppLink(
     </div>
   </section>
 
-  <div class="mx-auto max-w-2xl px-5 py-12">
-    <div class="mb-8 rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-5 text-sm text-brand-gray-700">
+  <div class="mx-auto max-w-6xl px-5 py-12">
+    <div class="mb-10 rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-5 text-sm text-brand-gray-700">
       <p class="font-semibold text-brand-gray-900">Oficina</p>
       <p class="mt-1">{SITE.address}</p>
       <p class="mt-2">
@@ -31,53 +23,126 @@ const wspVender = buildWhatsAppLink(
       </p>
     </div>
 
-    <div class="mb-8 flex flex-wrap gap-3">
-      <a
-        href={wspGeneral}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-bold text-brand-gray-900 no-underline hover:bg-brand-yellow-dark"
-      >
-        WhatsApp — Consulta general
-      </a>
-      <a
-        href={wspVender}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex rounded-lg border border-brand-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-soft"
-      >
-        Quiero publicar mi propiedad
-      </a>
+    <div class="grid gap-8 lg:grid-cols-2">
+      <form id="consulta-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+        <div>
+          <h2 class="font-display text-xl font-bold text-brand-gray-900">Consulta general</h2>
+          <p class="mt-1 text-sm text-brand-gray-600">
+            Buscás comprar, alquilar o tenés dudas sobre una propiedad del catálogo.
+          </p>
+        </div>
+
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 opacity-0" aria-hidden="true" />
+        <input type="hidden" id="property-slug" name="propertySlug" />
+
+        <div>
+          <label for="consulta-nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre *</label>
+          <input id="consulta-nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+        <div>
+          <label for="consulta-email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email *</label>
+          <input id="consulta-email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+        <div>
+          <label for="consulta-telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono</label>
+          <input id="consulta-telefono" name="telefono" type="tel" class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+        <div>
+          <label for="consulta-mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Mensaje *</label>
+          <textarea
+            id="consulta-mensaje"
+            name="mensaje"
+            required
+            rows="4"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+            placeholder="Contanos qué tipo de propiedad buscás o qué consulta tenés..."
+          ></textarea>
+        </div>
+        <button type="submit" class="w-full rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-bold text-brand-gray-900 hover:bg-brand-yellow-dark">
+          Enviar consulta por WhatsApp
+        </button>
+        <p id="consulta-message" class="hidden rounded-lg p-3 text-sm" role="status"></p>
+      </form>
+
+      <form id="publicar-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+        <div>
+          <h2 class="font-display text-xl font-bold text-brand-gray-900">Quiero publicar mi propiedad</h2>
+          <p class="mt-1 text-sm text-brand-gray-600">
+            Completá los datos de tu inmueble y te contactamos para publicarlo en {SITE.city}.
+          </p>
+        </div>
+
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 opacity-0" aria-hidden="true" />
+
+        <div>
+          <label for="publicar-nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre *</label>
+          <input id="publicar-nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="publicar-email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email *</label>
+            <input id="publicar-email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          </div>
+          <div>
+            <label for="publicar-telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono *</label>
+            <input id="publicar-telefono" name="telefono" type="tel" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          </div>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="publicar-tipo" class="mb-1 block text-sm font-medium text-brand-gray-700">Tipo de propiedad *</label>
+            <select id="publicar-tipo" name="tipo" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow">
+              <option value="">Seleccionar</option>
+              <option value="departamento">Departamento</option>
+              <option value="casa">Casa</option>
+              <option value="ph">PH</option>
+              <option value="duplex">Dúplex</option>
+              <option value="terreno">Terreno</option>
+              <option value="local">Local comercial</option>
+              <option value="cochera">Cochera</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div>
+            <label for="publicar-operacion" class="mb-1 block text-sm font-medium text-brand-gray-700">Operación *</label>
+            <select id="publicar-operacion" name="operacion" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow">
+              <option value="">Seleccionar</option>
+              <option value="venta">Venta</option>
+              <option value="alquiler">Alquiler</option>
+              <option value="alquiler_temporal">Alquiler temporal</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="publicar-ubicacion" class="mb-1 block text-sm font-medium text-brand-gray-700">Barrio o dirección *</label>
+          <input
+            id="publicar-ubicacion"
+            name="ubicacion"
+            type="text"
+            required
+            placeholder={`Ej: Centro, ${SITE.city}`}
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          />
+        </div>
+        <div>
+          <label for="publicar-mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Comentarios</label>
+          <textarea
+            id="publicar-mensaje"
+            name="mensaje"
+            rows="3"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+            placeholder="Ambientes, m², estado, cochera..."
+          ></textarea>
+        </div>
+        <button type="submit" class="w-full rounded-lg bg-brand-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-gray-700">
+          Enviar solicitud por WhatsApp
+        </button>
+        <p id="publicar-message" class="hidden rounded-lg p-3 text-sm" role="status"></p>
+      </form>
     </div>
 
-    <form id="contact-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
-      <input type="hidden" name="website" tabindex="-1" autocomplete="off" />
-      <input type="hidden" id="property-slug" name="propertySlug" />
-
-      <div>
-        <label for="nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre</label>
-        <input id="nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
-      </div>
-      <div>
-        <label for="email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email</label>
-        <input id="email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
-      </div>
-      <div>
-        <label for="telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono (opcional)</label>
-        <input id="telefono" name="telefono" type="tel" class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
-      </div>
-      <div>
-        <label for="mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Mensaje</label>
-        <textarea id="mensaje" name="mensaje" required rows="5" class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" placeholder="Contanos qué tipo de propiedad buscás o querés publicar..."></textarea>
-      </div>
-      <button type="submit" class="rounded-lg bg-brand-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-gray-700">
-        Enviar por WhatsApp
-      </button>
-    </form>
-
-    <p id="form-message" class="mt-4 hidden rounded-lg p-3 text-sm" role="status"></p>
-    <p class="mt-4 text-xs text-brand-gray-500">
-      El formulario abre WhatsApp con tu mensaje. También podés escribirnos a{' '}
+    <p class="mt-8 text-xs text-brand-gray-500">
+      Los formularios abren WhatsApp con tu mensaje. También podés escribirnos a{' '}
       <a href={`mailto:${SITE.email}`} class="text-brand-gray-900 underline-offset-2 hover:underline">
         {SITE.email}
       </a>
@@ -106,11 +171,13 @@ const wspVender = buildWhatsAppLink(
   </div>
 </BaseLayout>
 
-<script define:vars={{ whatsappNumber: SITE.whatsappNumber, brandName: brandFull }}>
-  const form = document.querySelector('#contact-form');
-  const message = document.querySelector('#form-message');
+<script define:vars={{ whatsappNumber: SITE.whatsappNumber, brandName: brandFull, cityName: SITE.city }}>
+  const consultaForm = document.querySelector('#consulta-form');
+  const publicarForm = document.querySelector('#publicar-form');
+  const consultaMessage = document.querySelector('#consulta-message');
+  const publicarMessage = document.querySelector('#publicar-message');
   const propertySlugInput = document.querySelector('#property-slug');
-  const mensajeInput = document.querySelector('#mensaje');
+  const consultaMensajeInput = document.querySelector('#consulta-mensaje');
 
   const params = new URLSearchParams(window.location.search);
   const propertySlug = params.get('property');
@@ -119,51 +186,113 @@ const wspVender = buildWhatsAppLink(
   if (propertySlugInput instanceof HTMLInputElement && propertySlug) {
     propertySlugInput.value = propertySlug;
   }
-  if (mensajeInput instanceof HTMLTextAreaElement && propertyTitle && !mensajeInput.value.trim()) {
-    mensajeInput.value = `Hola, me interesa la propiedad: ${propertyTitle}. Quisiera coordinar una visita o recibir más información.`;
+  if (consultaMensajeInput instanceof HTMLTextAreaElement && propertyTitle && !consultaMensajeInput.value.trim()) {
+    consultaMensajeInput.value = `Hola, me interesa la propiedad: ${propertyTitle}. Quisiera coordinar una visita o recibir más información.`;
   }
 
-  form?.addEventListener('submit', (event) => {
+  function showMessage(el, text, type) {
+    if (!(el instanceof HTMLElement)) return;
+    el.textContent = text;
+    el.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-800');
+    el.classList.add(
+      type === 'error' ? 'bg-red-50' : 'bg-emerald-50',
+      type === 'error' ? 'text-red-700' : 'text-emerald-800',
+    );
+  }
+
+  function openWhatsApp(lines, messageEl, form) {
+    const wspUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
+    window.open(wspUrl, '_blank', 'noopener,noreferrer');
+    showMessage(messageEl, 'Se abrió WhatsApp con tu mensaje. Si no se abrió, intentá de nuevo.', 'success');
+    form.reset();
+    if (propertySlugInput instanceof HTMLInputElement && propertySlug) {
+      propertySlugInput.value = propertySlug;
+    }
+    if (consultaMensajeInput instanceof HTMLTextAreaElement && propertyTitle) {
+      consultaMensajeInput.value = `Hola, me interesa la propiedad: ${propertyTitle}. Quisiera coordinar una visita o recibir más información.`;
+    }
+  }
+
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  consultaForm?.addEventListener('submit', (event) => {
     event.preventDefault();
-    const data = new FormData(form);
+    if (!(consultaForm instanceof HTMLFormElement)) return;
+
+    const data = new FormData(consultaForm);
     const nombre = (data.get('nombre') || '').toString().trim();
     const email = (data.get('email') || '').toString().trim();
+    const telefono = (data.get('telefono') || '').toString().trim();
     const mensaje = (data.get('mensaje') || '').toString().trim();
     const website = (data.get('website') || '').toString().trim();
+    const slug = (data.get('propertySlug') || '').toString().trim();
 
     if (!nombre || !email || !mensaje || website) {
-      showMessage('Completá los campos obligatorios.', 'error');
+      showMessage(consultaMessage, 'Completá los campos obligatorios.', 'error');
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showMessage('Ingresá un email válido.', 'error');
+    if (!validateEmail(email)) {
+      showMessage(consultaMessage, 'Ingresá un email válido.', 'error');
       return;
     }
 
-    const telefono = (data.get('telefono') || '').toString().trim();
-    const propertySlug = (data.get('propertySlug') || '').toString().trim();
     const lines = [
-      `Hola ${brandName},`,
+      `Hola ${brandName}, tengo una consulta general.`,
       '',
       `Nombre: ${nombre}`,
       `Email: ${email}`,
     ];
     if (telefono) lines.push(`Teléfono: ${telefono}`);
-    if (propertySlug) lines.push(`Propiedad: ${propertySlug}`);
+    if (slug) lines.push(`Propiedad: ${slug}`);
     lines.push('', mensaje);
-    const wspUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
-    window.open(wspUrl, '_blank', 'noopener,noreferrer');
-    showMessage(
-      'Se abrió WhatsApp con tu consulta. Si no se abrió, usá los botones de arriba o escribinos por email.',
-      'success',
-    );
-    form.reset();
+
+    openWhatsApp(lines, consultaMessage, consultaForm);
   });
 
-  function showMessage(text: string, type: 'error' | 'success') {
-    if (!message) return;
-    message.textContent = text;
-    message.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-800');
-    message.classList.add(type === 'error' ? 'bg-red-50' : 'bg-emerald-50', type === 'error' ? 'text-red-700' : 'text-emerald-800');
-  }
+  publicarForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!(publicarForm instanceof HTMLFormElement)) return;
+
+    const data = new FormData(publicarForm);
+    const nombre = (data.get('nombre') || '').toString().trim();
+    const email = (data.get('email') || '').toString().trim();
+    const telefono = (data.get('telefono') || '').toString().trim();
+    const tipo = (data.get('tipo') || '').toString().trim();
+    const operacion = (data.get('operacion') || '').toString().trim();
+    const ubicacion = (data.get('ubicacion') || '').toString().trim();
+    const mensaje = (data.get('mensaje') || '').toString().trim();
+    const website = (data.get('website') || '').toString().trim();
+
+    if (!nombre || !email || !telefono || !tipo || !operacion || !ubicacion || website) {
+      showMessage(publicarMessage, 'Completá los campos obligatorios.', 'error');
+      return;
+    }
+    if (!validateEmail(email)) {
+      showMessage(publicarMessage, 'Ingresá un email válido.', 'error');
+      return;
+    }
+
+    const operacionLabel =
+      operacion === 'venta'
+        ? 'Venta'
+        : operacion === 'alquiler_temporal'
+          ? 'Alquiler temporal'
+          : 'Alquiler';
+
+    const lines = [
+      `Hola ${brandName}, quiero publicar mi propiedad en ${cityName}.`,
+      '',
+      `Nombre: ${nombre}`,
+      `Email: ${email}`,
+      `Teléfono: ${telefono}`,
+      `Tipo: ${tipo}`,
+      `Operación: ${operacionLabel}`,
+      `Ubicación: ${ubicacion}`,
+    ];
+    if (mensaje) lines.push('', mensaje);
+
+    openWhatsApp(lines, publicarMessage, publicarForm);
+  });
 </script>

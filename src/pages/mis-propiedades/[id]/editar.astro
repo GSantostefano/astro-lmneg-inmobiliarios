@@ -1,0 +1,498 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { SITE } from '../../../config/site';
+import { getApiUrl, getBrowserApiUrl } from '../../../lib/api';
+import { getWorkerEnv } from '../../../lib/cf-env';
+
+export const prerender = false;
+
+const apiUrl = getBrowserApiUrl();
+const upstreamApiUrl = getApiUrl(getWorkerEnv());
+---
+
+<BaseLayout
+  title={`Editar propiedad | ${SITE.name}`}
+  description="Modificá los datos de tu publicación inmobiliaria."
+>
+  <section class="bg-brand-gray-900 px-5 py-12 text-white">
+    <div class="mx-auto max-w-6xl">
+      <nav class="mb-4 text-sm text-brand-gray-300">
+        <a href="/mis-propiedades" class="no-underline hover:text-white">Mis propiedades</a>
+        <span class="mx-2">/</span>
+        <span>Editar</span>
+      </nav>
+      <h1 class="font-display text-3xl font-bold">Editar propiedad</h1>
+      <p class="mt-2 max-w-2xl text-brand-gray-100">Actualizá título, precio, descripción, estado y fotos.</p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-2xl px-5 py-12">
+    <p id="auth-gate" class="hidden rounded-xl border border-brand-gray-200 bg-brand-yellow-soft p-4 text-sm">
+      <a href="/admin" class="font-semibold text-brand-gray-900">Iniciá sesión</a> para editar.
+    </p>
+    <p id="loading" class="text-sm text-brand-gray-500">Cargando propiedad…</p>
+
+    <form id="edit-form" class="hidden space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 opacity-0" aria-hidden="true" />
+
+      <p id="ref-line" class="rounded-lg bg-brand-gray-50 px-3 py-2 text-sm text-brand-gray-600"></p>
+
+      <label class="block text-sm font-medium text-brand-gray-700">
+        Título *
+        <input name="title" type="text" required maxlength="180" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+      </label>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Operación *
+          <select name="operation" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+            <option value="venta">Venta</option>
+            <option value="alquiler">Alquiler</option>
+            <option value="alquiler_temporal">Alquiler temporal</option>
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Tipo *
+          <select name="type" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+            <option value="departamento">Departamento</option>
+            <option value="casa">Casa</option>
+            <option value="ph">PH</option>
+            <option value="duplex">Dúplex</option>
+            <option value="cochera">Cochera</option>
+            <option value="terreno">Terreno</option>
+            <option value="local">Local comercial</option>
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Estado *
+          <select name="status" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+            <option value="disponible">Disponible</option>
+            <option value="reservada">Reservada</option>
+            <option value="alquilada">Alquilada</option>
+            <option value="vendida">Vendida</option>
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Precio *
+          <input name="price" type="number" min="0" step="1000" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Moneda *
+          <select name="currency" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+            <option value="USD">USD</option>
+            <option value="ARS">ARS</option>
+          </select>
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Barrio *
+          <input name="neighborhood" type="text" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Ciudad *
+          <input name="city" type="text" required class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Ambientes
+          <input name="rooms" type="number" min="0" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Baños
+          <input name="bathrooms" type="number" min="0" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          m² cubiertos
+          <input name="coveredM2" type="number" min="0" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+        <label class="block text-sm font-medium text-brand-gray-700">
+          m² semicubiertos
+          <input name="semiCoveredM2" type="number" min="0" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+        </label>
+      </div>
+
+      <fieldset class="space-y-4 rounded-xl border border-brand-gray-200 bg-brand-gray-50 p-4">
+        <legend class="px-1 text-sm font-semibold text-brand-gray-900">Ubicación en mapa</legend>
+        <p class="text-xs text-brand-gray-500">
+          Podés cargar calle, link de Google Maps/OpenStreetMap o buscar coordenadas automáticamente.
+        </p>
+
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Calle y número
+          <input name="address" type="text" maxlength="200" placeholder="Ej: Av. Ramírez 450" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2" />
+        </label>
+
+        <label class="block text-sm font-medium text-brand-gray-700">
+          Link del mapa
+          <input name="mapUrl" type="url" maxlength="1000" placeholder="https://maps.google.com/... u OpenStreetMap" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2" />
+        </label>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block text-sm font-medium text-brand-gray-700">
+            Latitud
+            <input name="latitude" type="text" inputmode="decimal" placeholder="-31.731" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2" />
+          </label>
+          <label class="block text-sm font-medium text-brand-gray-700">
+            Longitud
+            <input name="longitude" type="text" inputmode="decimal" placeholder="-60.523" class="mt-1 w-full rounded-lg border border-brand-gray-200 bg-white px-3 py-2" />
+          </label>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            id="geocode-btn"
+            class="rounded-lg border border-brand-gray-200 bg-white px-4 py-2 text-sm font-semibold text-brand-gray-900 hover:bg-brand-yellow-soft"
+          >
+            Buscar coordenadas
+          </button>
+          <p id="geocode-status" class="text-xs text-brand-gray-500"></p>
+        </div>
+      </fieldset>
+
+      <label class="block text-sm font-medium text-brand-gray-700">
+        Descripción *
+        <textarea name="description" required rows="4" minlength="10" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2"></textarea>
+      </label>
+
+      <label class="block text-sm font-medium text-brand-gray-700">
+        Características (separadas por coma)
+        <input name="features" type="text" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2" />
+      </label>
+
+      <div id="current-photo" class="hidden">
+        <p class="text-sm font-medium text-brand-gray-700">Foto actual</p>
+        <img id="current-photo-img" src="" alt="" class="mt-2 h-40 w-full max-w-xs rounded-xl object-cover" />
+      </div>
+
+      <fieldset class="space-y-2">
+        <legend class="text-sm font-medium text-brand-gray-700">Reemplazar fotos (opcional)</legend>
+        <p class="text-xs text-brand-gray-500">Si subís fotos nuevas, reemplazan la galería actual. Máx. 20 × 5 MB.</p>
+        <label class="mt-1 flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-brand-gray-200 bg-brand-gray-50 px-4 py-6 text-center hover:bg-brand-yellow-soft">
+          <span class="text-sm font-semibold text-brand-gray-900">Elegir fotos nuevas</span>
+          <input id="photos-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="sr-only" />
+        </label>
+        <div id="photos-preview" class="hidden grid grid-cols-3 gap-2 sm:grid-cols-5"></div>
+      </fieldset>
+
+      <div class="flex flex-wrap gap-3">
+        <button type="submit" class="rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-bold text-brand-gray-900 hover:bg-brand-yellow-dark">
+          Guardar cambios
+        </button>
+        <a href="/mis-propiedades" class="inline-flex rounded-lg border border-brand-gray-200 bg-brand-gray-50 px-5 py-2.5 text-sm font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-soft">
+          Cancelar
+        </a>
+      </div>
+    </form>
+
+    <p id="form-message" class="mt-4 hidden rounded-lg p-3 text-sm" role="status"></p>
+
+    <div id="edit-config" class="hidden" data-api-url={apiUrl} data-upstream-api-url={upstreamApiUrl} aria-hidden="true"></div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { getSession, requireAuthRedirect } from '../../../lib/auth.ts';
+  import { buildPropertyLocationQuery, geocodeLocation } from '../../../lib/maps.ts';
+
+  const cfg = document.getElementById('edit-config')?.dataset ?? {};
+  const apiUrl = cfg.apiUrl || 'http://localhost:3020';
+  const upstreamApiUrl = cfg.upstreamApiUrl || apiUrl;
+
+  const authGate = document.querySelector('#auth-gate');
+  const loading = document.querySelector('#loading');
+  const form = document.querySelector('#edit-form');
+  const message = document.querySelector('#form-message');
+  const refLine = document.querySelector('#ref-line');
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  const photosInput = document.querySelector('#photos-input');
+  const photosPreview = document.querySelector('#photos-preview');
+  const currentPhotoWrap = document.querySelector('#current-photo');
+  const currentPhotoImg = document.querySelector('#current-photo-img');
+  const geocodeBtn = document.querySelector('#geocode-btn');
+  const geocodeStatus = document.querySelector('#geocode-status');
+
+  const MAX_PHOTOS = 20;
+  const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+  let selectedPhotos = [];
+  let saving = false;
+  let propertyId = 0;
+
+  const pathMatch = window.location.pathname.match(/\/mis-propiedades\/(\d+)\/editar\/?$/);
+  if (pathMatch) propertyId = Number(pathMatch[1]);
+
+  function showMessage(text, type = 'error') {
+    if (!(message instanceof HTMLElement)) return;
+    message.textContent = text;
+    message.classList.remove('hidden', 'bg-red-50', 'text-red-800', 'bg-brand-yellow-soft', 'text-brand-gray-800');
+    message.classList.add(
+      type === 'ok' ? 'bg-brand-yellow-soft' : 'bg-red-50',
+      type === 'ok' ? 'text-brand-gray-800' : 'text-red-800',
+    );
+  }
+
+  function setField(name, value) {
+    if (!(form instanceof HTMLFormElement)) return;
+    const field = form.elements.namedItem(name);
+    if (field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) {
+      field.value = String(value ?? '');
+    }
+  }
+
+  function canManage(property, session) {
+    if (!session) return false;
+    if (session.user.role === 'admin') return true;
+    return Number(property.userId) === Number(session.user.id);
+  }
+
+  async function loadProperty() {
+    if (!propertyId) {
+      showMessage('ID de propiedad inválido.');
+      return;
+    }
+    const session = getSession();
+    if (!session) return;
+
+    const res = await fetch(`${apiUrl}/api/properties/${propertyId}`, {
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || `Error ${res.status}`);
+
+    const property = json.data;
+    if (!canManage(property, session)) {
+      showMessage('No tenés permiso para editar esta propiedad.');
+      window.setTimeout(() => {
+        window.location.href = '/mis-propiedades';
+      }, 900);
+      return;
+    }
+
+    if (refLine) {
+      refLine.textContent = `Referencia ${property.refCode} · ${property.slug}`;
+    }
+
+    setField('title', property.title);
+    setField('operation', property.operation);
+    setField('type', property.type);
+    setField('status', property.status);
+    setField('price', property.price);
+    setField('currency', property.currency);
+    setField('neighborhood', property.neighborhood);
+    setField('city', property.city);
+    setField('address', property.address || '');
+    setField('mapUrl', property.mapUrl || '');
+    setField('latitude', property.latitude ?? '');
+    setField('longitude', property.longitude ?? '');
+    setField('rooms', property.rooms);
+    setField('bathrooms', property.bathrooms);
+    setField('coveredM2', property.coveredM2);
+    setField('semiCoveredM2', property.semiCoveredM2);
+    setField('description', property.description);
+    setField('features', Array.isArray(property.features) ? property.features.join(', ') : '');
+
+    if (currentPhotoImg instanceof HTMLImageElement && property.heroImage) {
+      currentPhotoImg.src = property.heroImage.startsWith('/uploads/')
+        ? `/api/bridge${property.heroImage}`
+        : property.heroImage;
+      currentPhotoImg.alt = property.title;
+      currentPhotoWrap?.classList.remove('hidden');
+    }
+
+    loading?.classList.add('hidden');
+    form?.classList.remove('hidden');
+  }
+
+  function readForm() {
+    if (!(form instanceof HTMLFormElement)) return null;
+    const data = new FormData(form);
+    if ((data.get('website') || '').toString().trim()) return null;
+
+    const title = (data.get('title') || '').toString().trim();
+    const description = (data.get('description') || '').toString().trim();
+    if (!title || description.length < 10) {
+      showMessage('Completá título y descripción (mín. 10 caracteres).');
+      return null;
+    }
+
+    const featuresRaw = (data.get('features') || '').toString().trim();
+    const address = (data.get('address') || '').toString().trim();
+    const mapUrl = (data.get('mapUrl') || '').toString().trim();
+    const latitudeRaw = (data.get('latitude') || '').toString().trim();
+    const longitudeRaw = (data.get('longitude') || '').toString().trim();
+    const latitude = latitudeRaw ? Number(latitudeRaw) : null;
+    const longitude = longitudeRaw ? Number(longitudeRaw) : null;
+
+    if (latitudeRaw && !Number.isFinite(latitude)) {
+      showMessage('La latitud no es válida.');
+      return null;
+    }
+    if (longitudeRaw && !Number.isFinite(longitude)) {
+      showMessage('La longitud no es válida.');
+      return null;
+    }
+
+    return {
+      title,
+      operation: (data.get('operation') || 'venta').toString(),
+      type: (data.get('type') || 'departamento').toString(),
+      status: (data.get('status') || 'disponible').toString(),
+      price: Number(data.get('price') || 0),
+      currency: (data.get('currency') || 'USD').toString(),
+      neighborhood: (data.get('neighborhood') || '').toString().trim(),
+      city: (data.get('city') || '').toString().trim(),
+      address: address || null,
+      mapUrl: mapUrl || null,
+      latitude,
+      longitude,
+      rooms: Number(data.get('rooms') || 0),
+      bathrooms: Number(data.get('bathrooms') || 0),
+      coveredM2: Number(data.get('coveredM2') || 0),
+      semiCoveredM2: Number(data.get('semiCoveredM2') || 0),
+      description,
+      features: featuresRaw
+        ? featuresRaw.split(',').map((item) => item.trim()).filter(Boolean)
+        : [],
+    };
+  }
+
+  function buildMultipart(payload) {
+    const body = new FormData();
+    for (const [key, value] of Object.entries(payload)) {
+      if (key === 'features') {
+        body.append(key, JSON.stringify(value));
+        continue;
+      }
+      if (['address', 'mapUrl', 'latitude', 'longitude'].includes(key)) {
+        body.append(key, value == null ? '' : String(value));
+        continue;
+      }
+      if (value === null || value === undefined || value === '') continue;
+      body.append(key, String(value));
+    }
+    for (const file of selectedPhotos) body.append('photos', file, file.name);
+    return body;
+  }
+
+  function renderPhotoPreviews() {
+    if (!(photosPreview instanceof HTMLElement)) return;
+    photosPreview.innerHTML = '';
+    if (!selectedPhotos.length) {
+      photosPreview.classList.add('hidden');
+      return;
+    }
+    photosPreview.classList.remove('hidden');
+    for (const file of selectedPhotos) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.className = 'aspect-square w-full rounded-lg object-cover';
+      img.onload = () => URL.revokeObjectURL(img.src);
+      photosPreview.append(img);
+    }
+  }
+
+  photosInput?.addEventListener('change', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.files) return;
+    for (const file of Array.from(input.files)) {
+      if (!file.type.startsWith('image/') || file.size > MAX_PHOTO_BYTES) continue;
+      if (selectedPhotos.length >= MAX_PHOTOS) break;
+      selectedPhotos.push(file);
+    }
+    input.value = '';
+    renderPhotoPreviews();
+  });
+
+  geocodeBtn?.addEventListener('click', async () => {
+    if (!(form instanceof HTMLFormElement)) return;
+    const data = new FormData(form);
+    const neighborhood = (data.get('neighborhood') || '').toString().trim();
+    const city = (data.get('city') || '').toString().trim();
+    if (!neighborhood || !city) {
+      if (geocodeStatus instanceof HTMLElement) geocodeStatus.textContent = 'Completá barrio y ciudad primero.';
+      return;
+    }
+
+    const query = buildPropertyLocationQuery({
+      address: (data.get('address') || '').toString().trim(),
+      neighborhood,
+      city,
+    });
+
+    if (geocodeStatus instanceof HTMLElement) geocodeStatus.textContent = 'Buscando…';
+    if (geocodeBtn instanceof HTMLButtonElement) geocodeBtn.disabled = true;
+
+    try {
+      const result = await geocodeLocation(query);
+      if (!result) {
+        if (geocodeStatus instanceof HTMLElement) geocodeStatus.textContent = 'No se encontró la ubicación.';
+        return;
+      }
+      const latInput = form.querySelector('input[name="latitude"]');
+      const lngInput = form.querySelector('input[name="longitude"]');
+      if (latInput instanceof HTMLInputElement) latInput.value = String(result.lat);
+      if (lngInput instanceof HTMLInputElement) lngInput.value = String(result.lng);
+      if (geocodeStatus instanceof HTMLElement) {
+        geocodeStatus.textContent = result.label ? `Encontrado: ${result.label}` : 'Coordenadas cargadas.';
+      }
+    } catch {
+      if (geocodeStatus instanceof HTMLElement) geocodeStatus.textContent = 'Error al buscar la ubicación.';
+    } finally {
+      if (geocodeBtn instanceof HTMLButtonElement) geocodeBtn.disabled = false;
+    }
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (saving) return;
+    const payload = readForm();
+    if (!payload) return;
+    const session = getSession();
+    if (!session) {
+      requireAuthRedirect(window.location.pathname);
+      return;
+    }
+
+    saving = true;
+    if (submitBtn instanceof HTMLButtonElement) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Guardando…';
+    }
+
+    try {
+      const hasPhotos = selectedPhotos.length > 0;
+      const headers = { Authorization: `Bearer ${session.token}` };
+      if (!hasPhotos) headers['Content-Type'] = 'application/json';
+
+      const res = await fetch(`${apiUrl}/api/properties/${propertyId}`, {
+        method: 'PATCH',
+        headers,
+        body: hasPhotos ? buildMultipart(payload) : JSON.stringify(payload),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.message || `Error ${res.status}`);
+
+      showMessage('Cambios guardados. Redirigiendo…', 'ok');
+      window.setTimeout(() => {
+        window.location.href = '/mis-propiedades';
+      }, 700);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'No se pudo guardar';
+      showMessage(`${msg}. ¿Back activo en ${upstreamApiUrl}?`);
+    } finally {
+      saving = false;
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Guardar cambios';
+      }
+    }
+  });
+
+  if (!requireAuthRedirect(window.location.pathname)) {
+    authGate?.classList.remove('hidden');
+    loading?.classList.add('hidden');
+  } else {
+    loadProperty().catch((error) => {
+      loading?.classList.add('hidden');
+      showMessage(error instanceof Error ? error.message : 'No se pudo cargar la propiedad');
+    });
+  }
+</script>

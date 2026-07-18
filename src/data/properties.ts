@@ -1,5 +1,5 @@
 /** Catálogo importado desde Tokko Broker — LM negocios inmobiliarios */
-export type Operation = 'venta' | 'alquiler';
+export type Operation = 'venta' | 'alquiler' | 'alquiler_temporal';
 export type PropertyType = 'departamento' | 'casa' | 'ph' | 'duplex' | 'cochera' | 'terreno' | 'local';
 export type PropertyStatus = 'disponible' | 'reservada' | 'alquilada' | 'vendida';
 export type Currency = 'USD' | 'ARS';
@@ -15,6 +15,10 @@ export interface Property {
   currency: Currency;
   neighborhood: string;
   city: string;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  mapUrl?: string | null;
   coveredM2: number;
   semiCoveredM2: number;
   rooms: number;

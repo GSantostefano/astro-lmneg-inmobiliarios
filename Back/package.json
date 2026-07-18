@@ -1,0 +1,28 @@
+{
+  "name": "lmneg-inmobiliarios-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "seed": "node scripts/create-db.js && node scripts/seed-db.js",
+    "import-catalog": "node scripts/import-static-properties.js",
+    "migrate-auth": "node scripts/migrate-auth.js",
+    "create-db": "node scripts/create-db.js"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.4.1",
+    "google-auth-library": "^10.5.0",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.2.0",
+    "mysql2": "^3.23.0",
+    "nodemon": "^3.1.9",
+    "sequelize": "^6.37.5"
+  }
+}

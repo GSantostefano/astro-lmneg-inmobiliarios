@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site';
+import { getApiUrl, getBrowserApiUrl } from '../lib/api';
+import { getWorkerEnv } from '../lib/cf-env';
+
+export const prerender = false;
+
+const apiUrl = getBrowserApiUrl();
+const upstreamApiUrl = getApiUrl(getWorkerEnv());
+---
+
+<BaseLayout
+  title={`Mis propiedades | ${SITE.name}`}
+  description="Gestioná tus publicaciones en venta y alquiler."
+>
+  <section class="bg-brand-gray-900 px-5 py-12 text-white">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="font-display text-3xl font-bold">Mis propiedades</h1>
+        <p class="mt-2 text-brand-gray-100">Buscá por nombre, referencia o barrio. Editá el estado o eliminá tus publicaciones.</p>
+      </div>
+      <a
+        href="/publicar"
+        class="inline-flex rounded-lg bg-brand-yellow px-4 py-2 text-sm font-bold text-brand-gray-900 no-underline hover:bg-brand-yellow-dark"
+      >
+        + Publicar nueva
+      </a>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-5 py-8">
+    <p id="auth-gate" class="hidden rounded-xl border border-brand-gray-200 bg-brand-yellow-soft p-4 text-sm">
+      <a href="/admin?redirect=/mis-propiedades" class="font-semibold text-brand-gray-900">Iniciá sesión</a> para ver tus propiedades.
+    </p>
+
+    <section id="panel" class="hidden">
+      <div class="mb-6 rounded-2xl border border-brand-gray-200 bg-white p-4 shadow-sm">
+        <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p class="text-sm font-semibold text-brand-gray-900">Buscar y filtrar</p>
+            <p class="text-xs text-brand-gray-500">Por título, referencia, barrio o ciudad</p>
+          </div>
+          <p id="count-label" class="text-sm font-medium text-brand-gray-600" aria-live="polite"></p>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <label class="text-sm text-brand-gray-700 md:col-span-2 lg:col-span-3">
+            Buscar
+            <div class="relative mt-1">
+              <input
+                id="filter-search"
+                type="search"
+                placeholder="Ej: departamento centro, LHO8046943, Av. Estrada…"
+                class="w-full rounded-lg border border-brand-gray-200 py-2 pl-3 pr-10 text-sm"
+                autocomplete="off"
+              />
+              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-brand-gray-400" aria-hidden="true">⌕</span>
+            </div>
+          </label>
+
+          <label class="text-sm text-brand-gray-700">
+            Operación
+            <select id="filter-operation" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+              <option value="">Todas</option>
+              <option value="venta">Venta</option>
+              <option value="alquiler">Alquiler</option>
+              <option value="alquiler_temporal">Alquiler temporal</option>
+            </select>
+          </label>
+
+          <label class="text-sm text-brand-gray-700">
+            Tipo
+            <select id="filter-type" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+              <option value="">Todos</option>
+              <option value="departamento">Departamento</option>
+              <option value="casa">Casa</option>
+              <option value="ph">PH</option>
+              <option value="duplex">Dúplex</option>
+              <option value="cochera">Cochera</option>
+              <option value="terreno">Terreno</option>
+              <option value="local">Local</option>
+            </select>
+          </label>
+
+          <label class="text-sm text-brand-gray-700">
+            Estado
+            <select id="filter-status" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+              <option value="">Todos</option>
+              <option value="disponible">Disponible</option>
+              <option value="reservada">Reservada</option>
+              <option value="alquilada">Alquilada</option>
+              <option value="vendida">Vendida</option>
+            </select>
+          </label>
+
+          <label class="text-sm text-brand-gray-700">
+            Orden
+            <select id="filter-sort" class="mt-1 w-full rounded-lg border border-brand-gray-200 px-3 py-2">
+              <option value="recent">Más recientes</option>
+              <option value="title_asc">Nombre A → Z</option>
+              <option value="title_desc">Nombre Z → A</option>
+              <option value="price_asc">Precio menor</option>
+              <option value="price_desc">Precio mayor</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="mt-3 flex flex-wrap gap-3">
+          <button
+            id="clear-filters"
+            type="button"
+            class="rounded-lg border border-brand-gray-200 bg-brand-gray-50 px-3 py-2 text-sm font-semibold text-brand-gray-800 hover:bg-brand-yellow-soft"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+
+      <div id="list" class="grid gap-4"></div>
+      <p id="empty" class="hidden rounded-xl border border-brand-gray-200 bg-brand-gray-50 p-6 text-brand-gray-600">
+        Todavía no publicaste propiedades. <a href="/publicar" class="font-semibold text-brand-gray-900">Publicá la primera</a>.
+      </p>
+      <p
+        id="empty-filter"
+        class="hidden rounded-xl border border-brand-gray-200 bg-brand-yellow-soft p-6 text-brand-gray-700"
+        aria-live="polite"
+      >
+        No hay propiedades con esos filtros. Probá otro término o limpiá la búsqueda.
+      </p>
+    </section>
+
+    <p id="panel-message" class="mt-4 hidden rounded-lg p-3 text-sm" role="status"></p>
+
+    <div
+      id="mine-config"
+      class="hidden"
+      data-api-url={apiUrl}
+      data-upstream-api-url={upstreamApiUrl}
+      aria-hidden="true"
+    ></div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { getSession, requireAuthRedirect } from '../lib/auth.ts';
+
+  const cfg = document.getElementById('mine-config')?.dataset ?? {};
+  const apiUrl = cfg.apiUrl || 'http://localhost:3020';
+  const upstreamApiUrl = cfg.upstreamApiUrl || apiUrl;
+
+  const authGate = document.querySelector('#auth-gate');
+  const panel = document.querySelector('#panel');
+  const list = document.querySelector('#list');
+  const empty = document.querySelector('#empty');
+  const countLabel = document.querySelector('#count-label');
+  const panelMessage = document.querySelector('#panel-message');
+  const filterSearch = document.querySelector('#filter-search');
+  const filterOperation = document.querySelector('#filter-operation');
+  const filterType = document.querySelector('#filter-type');
+  const filterStatus = document.querySelector('#filter-status');
+  const filterSort = document.querySelector('#filter-sort');
+  const clearFiltersBtn = document.querySelector('#clear-filters');
+  const emptyFilter = document.querySelector('#empty-filter');
+
+  let allItems = [];
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function normalizeText(value) {
+    return String(value ?? '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function readFilters() {
+    return {
+      q: filterSearch instanceof HTMLInputElement ? filterSearch.value.trim() : '',
+      operation: filterOperation instanceof HTMLSelectElement ? filterOperation.value : '',
+      type: filterType instanceof HTMLSelectElement ? filterType.value : '',
+      status: filterStatus instanceof HTMLSelectElement ? filterStatus.value : '',
+      sort: filterSort instanceof HTMLSelectElement ? filterSort.value : 'recent',
+    };
+  }
+
+  function matchSearch(item, query) {
+    if (!query) return true;
+    const haystack = normalizeText(
+      [item.title, item.refCode, item.neighborhood, item.city, item.slug, item.description].join(' '),
+    );
+    const terms = normalizeText(query).split(/\s+/).filter(Boolean);
+    return terms.every((term) => haystack.includes(term));
+  }
+
+  function sortItems(items, sort) {
+    const sorted = [...items];
+    sorted.sort((a, b) => {
+      if (sort === 'title_asc') return a.title.localeCompare(b.title, 'es');
+      if (sort === 'title_desc') return b.title.localeCompare(a.title, 'es');
+      if (sort === 'price_asc') return Number(a.price) - Number(b.price);
+      if (sort === 'price_desc') return Number(b.price) - Number(a.price);
+      return Number(b.dbId || 0) - Number(a.dbId || 0);
+    });
+    return sorted;
+  }
+
+  function applyFilters() {
+    const filters = readFilters();
+    const filtered = sortItems(
+      allItems.filter((item) => {
+        const opOk = !filters.operation || item.operation === filters.operation;
+        const typeOk = !filters.type || item.type === filters.type;
+        const stOk = !filters.status || item.status === filters.status;
+        const qOk = matchSearch(item, filters.q);
+        return opOk && typeOk && stOk && qOk;
+      }),
+      filters.sort,
+    );
+    renderList(filtered);
+  }
+
+  function clearFilters() {
+    if (filterSearch instanceof HTMLInputElement) filterSearch.value = '';
+    if (filterOperation instanceof HTMLSelectElement) filterOperation.value = '';
+    if (filterType instanceof HTMLSelectElement) filterType.value = '';
+    if (filterStatus instanceof HTMLSelectElement) filterStatus.value = '';
+    if (filterSort instanceof HTMLSelectElement) filterSort.value = 'recent';
+    applyFilters();
+  }
+
+  function showPanelMessage(text, type = 'error') {
+    if (!(panelMessage instanceof HTMLElement)) return;
+    panelMessage.textContent = text;
+    panelMessage.classList.remove('hidden', 'bg-red-50', 'text-red-800', 'bg-brand-yellow-soft');
+    panelMessage.classList.add(type === 'ok' ? 'bg-brand-yellow-soft' : 'bg-red-50');
+  }
+
+  function formatPrice(price, currency) {
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(price);
+  }
+
+  function renderList(filtered) {
+    if (!(list instanceof HTMLElement) || !(empty instanceof HTMLElement)) return;
+    const hasCatalog = allItems.length > 0;
+    const hasResults = filtered.length > 0;
+
+    list.innerHTML = '';
+    empty.classList.toggle('hidden', hasCatalog);
+    emptyFilter?.classList.toggle('hidden', !hasCatalog || hasResults);
+
+    if (countLabel) {
+      const total = allItems.length;
+      countLabel.textContent =
+        filtered.length === total
+          ? `${total} publicación${total === 1 ? '' : 'es'}`
+          : `${filtered.length} de ${total} publicaciones`;
+    }
+
+    if (!hasResults) return;
+
+    for (const item of filtered) {
+      const card = document.createElement('article');
+      card.className = 'rounded-2xl border border-brand-gray-200 bg-white p-5 shadow-sm';
+      card.innerHTML = `
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-semibold uppercase text-brand-gray-500">${escapeHtml(item.operation)} · ${escapeHtml(item.type)} · ${escapeHtml(item.status)}</p>
+            <h2 class="font-display mt-1 text-xl font-bold text-brand-gray-900">${escapeHtml(item.title)}</h2>
+            <p class="mt-1 text-sm text-brand-gray-500">${escapeHtml(item.neighborhood)}, ${escapeHtml(item.city)} · Ref. ${escapeHtml(item.refCode)}</p>
+            <p class="mt-2 text-lg font-bold text-brand-gray-900">${formatPrice(item.price, item.currency)}</p>
+          </div>
+          <div class="flex shrink-0 flex-wrap gap-2">
+            <a href="/propiedades/${escapeHtml(item.slug)}" class="rounded-lg border border-brand-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-brand-gray-800 no-underline hover:bg-brand-gray-50">Ver ficha</a>
+            <a href="/mis-propiedades/${item.dbId}/editar" class="rounded-lg bg-brand-yellow px-3 py-1.5 text-sm font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-dark">Editar</a>
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap items-end gap-3">
+          <label class="text-sm text-brand-gray-700">
+            Estado
+            <select data-status-for="${item.dbId}" class="mt-1 rounded-lg border border-brand-gray-200 px-3 py-2 text-sm">
+              <option value="disponible" ${item.status === 'disponible' ? 'selected' : ''}>Disponible</option>
+              <option value="reservada" ${item.status === 'reservada' ? 'selected' : ''}>Reservada</option>
+              <option value="alquilada" ${item.status === 'alquilada' ? 'selected' : ''}>Alquilada</option>
+              <option value="vendida" ${item.status === 'vendida' ? 'selected' : ''}>Vendida</option>
+            </select>
+          </label>
+          <button type="button" data-save="${item.dbId}" class="rounded-lg bg-brand-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-gray-700">Guardar</button>
+          <button type="button" data-delete="${item.dbId}" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100">Eliminar</button>
+        </div>
+      `;
+      list.append(card);
+    }
+  }
+
+  async function loadMine() {
+    const session = getSession();
+    if (!session) return;
+    const res = await fetch(`${apiUrl}/api/users/me/properties`, {
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || `Error ${res.status}`);
+    allItems = (json.data || []).map((item) => ({
+      ...item,
+      dbId: item.id,
+      id: item.tokkoId ? `prop-${item.tokkoId}` : `prop-${item.id}`,
+    }));
+    applyFilters();
+  }
+
+  async function saveStatus(id) {
+    const session = getSession();
+    if (!session) return;
+    const select = document.querySelector(`[data-status-for="${id}"]`);
+    if (!(select instanceof HTMLSelectElement)) return;
+    const res = await fetch(`${apiUrl}/api/properties/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.token}`,
+      },
+      body: JSON.stringify({ status: select.value }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || `Error ${res.status}`);
+    showPanelMessage('Estado actualizado.', 'ok');
+    await loadMine();
+  }
+
+  async function removeItem(id) {
+    const session = getSession();
+    if (!session) return;
+    if (!window.confirm('¿Eliminar esta propiedad?')) return;
+    const res = await fetch(`${apiUrl}/api/properties/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${session.token}` },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.message || `Error ${res.status}`);
+    showPanelMessage('Propiedad eliminada.', 'ok');
+    await loadMine();
+  }
+
+  list?.addEventListener('click', async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const saveId = target.getAttribute('data-save');
+    const deleteId = target.getAttribute('data-delete');
+    try {
+      if (saveId) await saveStatus(saveId);
+      if (deleteId) await removeItem(deleteId);
+    } catch (error) {
+      showPanelMessage(error instanceof Error ? error.message : 'Acción fallida');
+    }
+  });
+
+  filterSearch?.addEventListener('input', applyFilters);
+  filterOperation?.addEventListener('change', applyFilters);
+  filterType?.addEventListener('change', applyFilters);
+  filterStatus?.addEventListener('change', applyFilters);
+  filterSort?.addEventListener('change', applyFilters);
+  clearFiltersBtn?.addEventListener('click', clearFilters);
+
+  if (!requireAuthRedirect('/mis-propiedades')) {
+    authGate?.classList.remove('hidden');
+  } else {
+    panel?.classList.remove('hidden');
+    loadMine().catch((error) => {
+      const msg = error instanceof Error ? error.message : 'No se pudieron cargar tus propiedades';
+      showPanelMessage(`${msg}. ¿Back en ${upstreamApiUrl}?`);
+    });
+  }
+</script>

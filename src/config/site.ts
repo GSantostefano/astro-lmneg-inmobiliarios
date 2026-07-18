@@ -2,6 +2,7 @@ export const SITE = {
   name: 'LM',
   subtitle: 'negocios inmobiliarios',
   tagline: 'Venta y alquiler de propiedades en Paraná',
+  slogan: 'La confianza que buscas, la profesionalidad que mereces.',
   description:
     'LM · negocios inmobiliarios en Paraná, Entre Ríos. Intermediación profesional en compra, venta y alquiler de inmuebles.',
   city: 'Paraná',

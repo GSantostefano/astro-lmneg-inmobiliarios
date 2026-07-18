@@ -1,4 +1,4 @@
-import { DEFAULT_PROPERTY_IMAGE, featuredPropertyIds, properties } from '../data/properties';
+import { DEFAULT_PROPERTY_IMAGE } from '../data/properties';
 import type { Currency, Property } from '../data/properties';
 
 export function formatPrice(price: number, currency: Currency) {
@@ -9,12 +9,8 @@ export function formatPrice(price: number, currency: Currency) {
   }).format(price);
 }
 
-export function getPropertyBySlug(slug: string) {
-  return properties.find((property) => property.slug === slug);
-}
-
-export function getFeaturedProperties() {
-  return properties.filter((property) => featuredPropertyIds.includes(property.id));
+export function getPropertyBySlug(slug: string, catalog: Property[]) {
+  return catalog.find((property) => property.slug === slug);
 }
 
 export function getPropertyGalleryImages(property: Property) {
@@ -23,7 +19,12 @@ export function getPropertyGalleryImages(property: Property) {
 }
 
 export function operationLabel(operation: Property['operation']) {
-  return operation === 'venta' ? 'Venta' : 'Alquiler';
+  const labels: Record<Property['operation'], string> = {
+    venta: 'Venta',
+    alquiler: 'Alquiler',
+    alquiler_temporal: 'Alquiler temporal',
+  };
+  return labels[operation] ?? operation;
 }
 
 export function typeLabel(type: Property['type']) {
@@ -39,8 +40,8 @@ export function typeLabel(type: Property['type']) {
   return labels[type] ?? type;
 }
 
-export function catalogHasOperation(operation: Property['operation']) {
-  return properties.some((p) => p.operation === operation);
+export function catalogHasOperation(catalog: Property[], operation: Property['operation']) {
+  return catalog.some((p) => p.operation === operation);
 }
 
 export function showsRoomMetrics(type: Property['type']) {

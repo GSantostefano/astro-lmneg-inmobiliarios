@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, brandFull } from '../config/site';
+import { buildWhatsAppLink } from '../lib/whatsapp';
+
+const wspTasacion = buildWhatsAppLink(
+  `Hola ${brandFull}, quiero solicitar una tasación de mi propiedad en ${SITE.city}.`,
+);
+
+const benefits = [
+  {
+    title: 'Valor de mercado actualizado',
+    text: 'Analizamos propiedades comparables y la demanda en tu zona de Paraná.',
+  },
+  {
+    title: 'Asesoramiento profesional',
+    text: 'Te orientamos para vender, alquilar o tomar decisiones con información clara.',
+  },
+  {
+    title: 'Sin compromiso',
+    text: 'Coordinamos una visita y te explicamos el proceso antes de avanzar.',
+  },
+];
+---
+
+<BaseLayout
+  title={`Tasación | ${SITE.name}`}
+  description={`Solicitá la tasación de tu propiedad en ${SITE.city} con ${brandFull}. Valoración profesional para venta o alquiler.`}
+>
+  <section class="bg-brand-gray-900 px-5 py-12 text-white">
+    <div class="mx-auto max-w-6xl">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-yellow">Servicio profesional</p>
+      <h1 class="font-display mt-2 text-3xl font-bold md:text-4xl">Tasación de propiedades</h1>
+      <p class="mt-3 max-w-2xl text-brand-gray-100">
+        Conocé el valor real de tu inmueble en {SITE.city}. Te ayudamos a definir un precio acorde al mercado para vender o alquilar con confianza.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-12">
+    <div class="grid gap-4 md:grid-cols-3">
+      {
+        benefits.map((item) => (
+          <article class="rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-6">
+            <div class="mb-3 h-1 w-10 rounded-full bg-brand-yellow"></div>
+            <h2 class="font-display text-lg font-bold text-brand-gray-900">{item.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-brand-gray-600">{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-2xl px-5 pb-12">
+    <div class="mb-8 flex flex-wrap gap-3">
+      <a
+        href={wspTasacion}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-bold text-brand-gray-900 no-underline hover:bg-brand-yellow-dark"
+      >
+        Solicitar por WhatsApp
+      </a>
+    </div>
+
+    <form id="tasacion-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 opacity-0" aria-hidden="true" />
+
+      <p class="text-sm text-brand-gray-600">
+        Completá el formulario y te contactamos para coordinar la visita y la tasación de tu propiedad.
+      </p>
+
+      <div>
+        <label for="nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre *</label>
+        <input id="nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email *</label>
+          <input id="email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+        <div>
+          <label for="telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono *</label>
+          <input id="telefono" name="telefono" type="tel" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="tipo" class="mb-1 block text-sm font-medium text-brand-gray-700">Tipo de propiedad *</label>
+          <select id="tipo" name="tipo" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow">
+            <option value="">Seleccionar</option>
+            <option value="departamento">Departamento</option>
+            <option value="casa">Casa</option>
+            <option value="ph">PH</option>
+            <option value="duplex">Dúplex</option>
+            <option value="terreno">Terreno</option>
+            <option value="local">Local comercial</option>
+            <option value="cochera">Cochera</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div>
+          <label for="operacion" class="mb-1 block text-sm font-medium text-brand-gray-700">Objetivo *</label>
+          <select id="operacion" name="operacion" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow">
+            <option value="">Seleccionar</option>
+            <option value="venta">Vender</option>
+            <option value="alquiler">Alquilar</option>
+            <option value="consulta">Solo quiero saber el valor</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="ubicacion" class="mb-1 block text-sm font-medium text-brand-gray-700">Barrio o dirección *</label>
+        <input
+          id="ubicacion"
+          name="ubicacion"
+          type="text"
+          required
+          placeholder={`Ej: Centro, ${SITE.city}`}
+          class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+        />
+      </div>
+
+      <div>
+        <label for="superficie" class="mb-1 block text-sm font-medium text-brand-gray-700">Superficie aproximada (m²)</label>
+        <input id="superficie" name="superficie" type="text" inputmode="numeric" placeholder="Ej: 65" class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+      </div>
+
+      <div>
+        <label for="mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Comentarios adicionales</label>
+        <textarea
+          id="mensaje"
+          name="mensaje"
+          rows="4"
+          class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          placeholder="Ambientes, estado de la propiedad, cochera, amenities..."
+        ></textarea>
+      </div>
+
+      <button type="submit" class="rounded-lg bg-brand-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-gray-700">
+        Enviar solicitud por WhatsApp
+      </button>
+    </form>
+
+    <p id="form-message" class="mt-4 hidden rounded-lg p-3 text-sm" role="status"></p>
+
+    <p class="mt-4 text-xs text-brand-gray-500">
+      La tasación es orientativa según condiciones del mercado y características del inmueble. También podés escribirnos a{' '}
+      <a href={`mailto:${SITE.email}`} class="text-brand-gray-900 underline-offset-2 hover:underline">
+        {SITE.email}
+      </a>
+      .
+    </p>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ whatsappNumber: SITE.whatsappNumber, brandName: brandFull, cityName: SITE.city }}>
+  const form = document.querySelector('#tasacion-form');
+  const message = document.querySelector('#form-message');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const data = new FormData(form);
+    const nombre = (data.get('nombre') || '').toString().trim();
+    const email = (data.get('email') || '').toString().trim();
+    const telefono = (data.get('telefono') || '').toString().trim();
+    const tipo = (data.get('tipo') || '').toString().trim();
+    const operacion = (data.get('operacion') || '').toString().trim();
+    const ubicacion = (data.get('ubicacion') || '').toString().trim();
+    const superficie = (data.get('superficie') || '').toString().trim();
+    const mensaje = (data.get('mensaje') || '').toString().trim();
+    const website = (data.get('website') || '').toString().trim();
+
+    if (!nombre || !email || !telefono || !tipo || !operacion || !ubicacion || website) {
+      showMessage('Completá los campos obligatorios.', 'error');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showMessage('Ingresá un email válido.', 'error');
+      return;
+    }
+
+    const operacionLabel =
+      operacion === 'venta' ? 'Vender' : operacion === 'alquiler' ? 'Alquilar' : 'Consulta de valor';
+
+    const lines = [
+      `Hola ${brandName}, quiero solicitar una tasación.`,
+      '',
+      `Nombre: ${nombre}`,
+      `Email: ${email}`,
+      `Teléfono: ${telefono}`,
+      `Tipo: ${tipo}`,
+      `Objetivo: ${operacionLabel}`,
+      `Ubicación: ${ubicacion}, ${cityName}`,
+    ];
+    if (superficie) lines.push(`Superficie aprox.: ${superficie} m²`);
+    if (mensaje) lines.push('', mensaje);
+
+    const wspUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
+    window.open(wspUrl, '_blank', 'noopener,noreferrer');
+    showMessage('Se abrió WhatsApp con tu solicitud. Si no se abrió, usá el botón de arriba.', 'success');
+    form.reset();
+  });
+
+  function showMessage(text, type) {
+    if (!(message instanceof HTMLElement)) return;
+    message.textContent = text;
+    message.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-800');
+    message.classList.add(
+      type === 'error' ? 'bg-red-50' : 'bg-emerald-50',
+      type === 'error' ? 'text-red-700' : 'text-emerald-800',
+    );
+  }
+</script>

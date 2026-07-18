@@ -1,10 +1,12 @@
 ---
 import ListingImage from '../../components/ListingImage.astro';
+import PropertyMap from '../../components/PropertyMap.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { properties } from '../../data/properties';
+import { getApiUrl } from '../../lib/api';
+import { getWorkerEnv } from '../../lib/cf-env';
+import { loadPropertyBySlug } from '../../lib/catalog';
 import {
   formatPrice,
-  getPropertyBySlug,
   getPropertyGalleryImages,
   operationLabel,
   showsRoomMetrics,
@@ -13,14 +15,11 @@ import {
 import { buildPropertyWhatsAppLink } from '../../lib/whatsapp';
 import { SITE } from '../../config/site';
 
-export function getStaticPaths() {
-  return properties.map((property) => ({
-    params: { slug: property.slug },
-  }));
-}
+export const prerender = false;
 
+const apiUrl = getApiUrl(getWorkerEnv());
 const { slug } = Astro.params;
-const property = getPropertyBySlug(slug ?? '');
+const property = await loadPropertyBySlug(slug ?? '', apiUrl);
 
 if (!property) {
   return Astro.redirect('/propiedades');
@@ -100,6 +99,15 @@ const showMetrics = showsRoomMetrics(property.type);
             )
           }
         </div>
+
+        <PropertyMap
+          neighborhood={property.neighborhood}
+          city={property.city}
+          address={property.address}
+          mapUrl={property.mapUrl}
+          latitude={property.latitude}
+          longitude={property.longitude}
+        />
 
         {
           galleryRest.length > 0 && (

@@ -2,14 +2,18 @@
 import PropertyCard from '../../components/PropertyCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../config/site';
-import { properties } from '../../data/properties';
+import { getApiUrl } from '../../lib/api';
+import { getWorkerEnv } from '../../lib/cf-env';
+import { loadProperties } from '../../lib/catalog';
 import { catalogHasOperation } from '../../lib/properties';
 
+const apiUrl = getApiUrl(getWorkerEnv());
+const properties = await loadProperties(apiUrl);
 const types = [...new Set(properties.map((p) => p.type))];
 const neighborhoods = [...new Set(properties.map((p) => p.neighborhood))].sort((a, b) =>
   a.localeCompare(b, 'es'),
 );
-const showAlquilerFilter = catalogHasOperation('alquiler');
+const showAlquilerFilter = catalogHasOperation(properties, 'alquiler');
 ---
 
 <BaseLayout

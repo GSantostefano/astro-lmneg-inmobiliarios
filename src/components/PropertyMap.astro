@@ -1,0 +1,44 @@
+---
+import { formatPropertyLocationLabel, resolvePropertyMapUrl } from '../lib/maps';
+
+interface Props {
+  neighborhood: string;
+  city?: string;
+  address?: string | null;
+  mapUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+const { neighborhood, city, address = null, mapUrl = null, latitude = null, longitude = null } = Astro.props;
+
+const locationLabel = formatPropertyLocationLabel({ address, neighborhood, city });
+const searchUrl = resolvePropertyMapUrl({ address, neighborhood, city, mapUrl, latitude, longitude });
+const hasExactLocation = Boolean(mapUrl?.trim()) || (latitude != null && longitude != null) || Boolean(address?.trim());
+---
+
+<section class="mt-8">
+  <h2 class="font-display text-xl font-bold text-brand-gray-900">Ubicación</h2>
+  <p class="mt-1 text-sm text-brand-gray-600">
+    {locationLabel}
+    {!hasExactLocation && ' · referencia por barrio'}
+  </p>
+
+  <div class="mt-4 rounded-2xl border border-brand-gray-200 bg-brand-gray-50 p-5">
+    <p class="text-sm text-brand-gray-700">
+      {
+        hasExactLocation
+          ? 'Consultá la ubicación de la propiedad en el mapa.'
+          : 'La dirección exacta se coordina en la visita. Podés ver la zona del barrio en el mapa.'
+      }
+    </p>
+    <a
+      href={searchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-4 inline-flex rounded-lg border border-brand-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-soft"
+    >
+      Ver ubicación en el mapa
+    </a>
+  </div>
+</section>
