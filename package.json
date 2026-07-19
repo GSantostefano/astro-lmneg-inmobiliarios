@@ -9,16 +9,24 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "cf:dev": "wrangler pages dev ./dist",
+    "cf:deploy": "wrangler pages deploy ./dist",
     "astro": "astro",
     "publish-images": "node scripts/publish-images-to-public.mjs"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.0.0",
     "@astrojs/sitemap": "^3.7.2",
     "@fontsource-variable/dm-sans": "^5.2.8",
     "@fontsource/playfair-display": "^5.2.8",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.3",
     "tailwindcss": "^4.3.0"
+  },
+  "overrides": {
+    "vite": "7.3.6"
+  },
+  "devDependencies": {
+    "@astrojs/cloudflare": "^13.7.0",
+    "wrangler": "^4.112.0"
   }
 }

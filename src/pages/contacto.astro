@@ -24,7 +24,7 @@ import { SITE, brandFull } from '../config/site';
     </div>
 
     <div class="grid gap-8 lg:grid-cols-2">
-      <form id="consulta-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+      <form id="consulta-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" autocomplete="on" novalidate>
         <div>
           <h2 class="font-display text-xl font-bold text-brand-gray-900">Consulta general</h2>
           <p class="mt-1 text-sm text-brand-gray-600">
@@ -37,15 +37,35 @@ import { SITE, brandFull } from '../config/site';
 
         <div>
           <label for="consulta-nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre *</label>
-          <input id="consulta-nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          <input
+            id="consulta-nombre"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          />
         </div>
         <div>
           <label for="consulta-email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email *</label>
-          <input id="consulta-email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          <input
+            id="consulta-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          />
         </div>
         <div>
           <label for="consulta-telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono</label>
-          <input id="consulta-telefono" name="telefono" type="tel" class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          <input
+            id="consulta-telefono"
+            name="tel"
+            type="tel"
+            autocomplete="tel"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          />
         </div>
         <div>
           <label for="consulta-mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Mensaje *</label>
@@ -54,6 +74,7 @@ import { SITE, brandFull } from '../config/site';
             name="mensaje"
             required
             rows="4"
+            autocomplete="off"
             class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
             placeholder="Contanos qué tipo de propiedad buscás o qué consulta tenés..."
           ></textarea>
@@ -64,11 +85,11 @@ import { SITE, brandFull } from '../config/site';
         <p id="consulta-message" class="hidden rounded-lg p-3 text-sm" role="status"></p>
       </form>
 
-      <form id="publicar-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" novalidate>
+      <form id="publicar-form" class="space-y-4 rounded-2xl border border-brand-gray-200 bg-white p-6 shadow-sm" autocomplete="on" novalidate>
         <div>
           <h2 class="font-display text-xl font-bold text-brand-gray-900">Quiero publicar mi propiedad</h2>
           <p class="mt-1 text-sm text-brand-gray-600">
-            Completá los datos de tu inmueble y te contactamos para publicarlo en {SITE.city}.
+            Contanos brevemente tu situación y qué querés lograr. Así ya tenemos una idea de tu inmueble antes de escribirte.
           </p>
         </div>
 
@@ -76,16 +97,37 @@ import { SITE, brandFull } from '../config/site';
 
         <div>
           <label for="publicar-nombre" class="mb-1 block text-sm font-medium text-brand-gray-700">Nombre *</label>
-          <input id="publicar-nombre" name="nombre" type="text" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+          <input
+            id="publicar-nombre"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+          />
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
             <label for="publicar-email" class="mb-1 block text-sm font-medium text-brand-gray-700">Email *</label>
-            <input id="publicar-email" name="email" type="email" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+            <input
+              id="publicar-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+            />
           </div>
           <div>
             <label for="publicar-telefono" class="mb-1 block text-sm font-medium text-brand-gray-700">Teléfono *</label>
-            <input id="publicar-telefono" name="telefono" type="tel" required class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow" />
+            <input
+              id="publicar-telefono"
+              name="tel"
+              type="tel"
+              required
+              autocomplete="tel"
+              class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
+            />
           </div>
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
@@ -120,18 +162,25 @@ import { SITE, brandFull } from '../config/site';
             name="ubicacion"
             type="text"
             required
+            autocomplete="address-level2"
             placeholder={`Ej: Centro, ${SITE.city}`}
             class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
           />
         </div>
         <div>
-          <label for="publicar-mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">Comentarios</label>
+          <label for="publicar-mensaje" class="mb-1 block text-sm font-medium text-brand-gray-700">
+            Contanos brevemente *
+          </label>
+          <p class="mb-2 text-xs text-brand-gray-500">
+            Qué tipo de propiedad es, en qué barrio, si querés vender o alquilar, y cualquier detalle que nos ayude a entender tu caso.
+          </p>
           <textarea
             id="publicar-mensaje"
             name="mensaje"
-            rows="3"
+            required
+            rows="4"
             class="w-full rounded-lg border border-brand-gray-200 px-3 py-2 focus:ring-2 focus:ring-brand-yellow"
-            placeholder="Ambientes, m², estado, cochera..."
+            placeholder={`Ej: Tengo un departamento de 2 amb en Centro, en buen estado. Quiero venderlo y saber cómo funciona la publicación en ${SITE.city}.`}
           ></textarea>
         </div>
         <button type="submit" class="w-full rounded-lg bg-brand-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-gray-700">
@@ -222,9 +271,9 @@ import { SITE, brandFull } from '../config/site';
     if (!(consultaForm instanceof HTMLFormElement)) return;
 
     const data = new FormData(consultaForm);
-    const nombre = (data.get('nombre') || '').toString().trim();
+    const nombre = (data.get('name') || '').toString().trim();
     const email = (data.get('email') || '').toString().trim();
-    const telefono = (data.get('telefono') || '').toString().trim();
+    const telefono = (data.get('tel') || '').toString().trim();
     const mensaje = (data.get('mensaje') || '').toString().trim();
     const website = (data.get('website') || '').toString().trim();
     const slug = (data.get('propertySlug') || '').toString().trim();
@@ -256,17 +305,17 @@ import { SITE, brandFull } from '../config/site';
     if (!(publicarForm instanceof HTMLFormElement)) return;
 
     const data = new FormData(publicarForm);
-    const nombre = (data.get('nombre') || '').toString().trim();
+    const nombre = (data.get('name') || '').toString().trim();
     const email = (data.get('email') || '').toString().trim();
-    const telefono = (data.get('telefono') || '').toString().trim();
+    const telefono = (data.get('tel') || '').toString().trim();
     const tipo = (data.get('tipo') || '').toString().trim();
     const operacion = (data.get('operacion') || '').toString().trim();
     const ubicacion = (data.get('ubicacion') || '').toString().trim();
     const mensaje = (data.get('mensaje') || '').toString().trim();
     const website = (data.get('website') || '').toString().trim();
 
-    if (!nombre || !email || !telefono || !tipo || !operacion || !ubicacion || website) {
-      showMessage(publicarMessage, 'Completá los campos obligatorios.', 'error');
+    if (!nombre || !email || !telefono || !tipo || !operacion || !ubicacion || !mensaje || website) {
+      showMessage(publicarMessage, 'Completá los campos obligatorios, incluido el comentario breve.', 'error');
       return;
     }
     if (!validateEmail(email)) {
@@ -290,8 +339,10 @@ import { SITE, brandFull } from '../config/site';
       `Tipo: ${tipo}`,
       `Operación: ${operacionLabel}`,
       `Ubicación: ${ubicacion}`,
+      '',
+      'Comentario:',
+      mensaje,
     ];
-    if (mensaje) lines.push('', mensaje);
 
     openWhatsApp(lines, publicarMessage, publicarForm);
   });
