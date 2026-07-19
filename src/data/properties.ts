@@ -2233,3 +2233,13 @@ export const featuredPropertyIds = [
   "prop-6965005",
   "prop-7859003"
 ];
+
+/** Orden fijo del hero slider en la landing. */
+export const heroSliderPropertyIds = [
+  "prop-6639092", // Casa en Ruta 18 km 48
+  "prop-6642167", // Terreno en Ruta 12 y Acceso Norte
+  "prop-6696914", // Casa en Echeverría y Blas Parera
+  "prop-6890274", // Departamento en Laprida al 800
+  "prop-7253268", // Casa en Luis Tilo Bartolomé
+  "prop-7718905", // Departamento en Brasil
+];

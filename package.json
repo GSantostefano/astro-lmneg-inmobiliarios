@@ -12,7 +12,8 @@
     "cf:dev": "wrangler pages dev ./dist",
     "cf:deploy": "wrangler pages deploy ./dist",
     "astro": "astro",
-    "publish-images": "node scripts/publish-images-to-public.mjs"
+    "publish-images": "node scripts/publish-images-to-public.mjs",
+    "hero-images": "node scripts/build-hero-slide-manifest.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",

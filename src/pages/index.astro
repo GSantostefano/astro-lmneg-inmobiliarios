@@ -1,18 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PropertyCard from '../components/PropertyCard.astro';
+import PropertyHeroSlider from '../components/PropertyHeroSlider.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
-import { SITE, brandFull } from '../config/site';
+import { SITE } from '../config/site';
 import { getApiUrl } from '../lib/api';
 import { getWorkerEnv } from '../lib/cf-env';
-import { loadFeaturedProperties } from '../lib/catalog';
-import { buildWhatsAppLink } from '../lib/whatsapp';
+import { loadFeaturedProperties, loadHeroSliderProperties } from '../lib/catalog';
 
 const apiUrl = getApiUrl(getWorkerEnv());
-const featured = (await loadFeaturedProperties(apiUrl)).slice(0, 4);
-const wspGeneral = buildWhatsAppLink(
-  `Hola ${brandFull}, quiero asesoramiento para comprar o alquilar en ${SITE.city}.`,
-);
+const heroSlides = await loadHeroSliderProperties(apiUrl);
+const featured = await loadFeaturedProperties(apiUrl);
+const featuredGrid = featured.slice(0, 4);
 
 const highlights = [
   {
@@ -31,28 +30,7 @@ const highlights = [
 ---
 
 <BaseLayout title={`${SITE.name} | ${SITE.subtitle} en Paraná`}>
-  <section class="relative overflow-hidden bg-brand-gray-900 text-white">
-    <div
-      class="absolute inset-0 bg-[url('/assets/hero-home.jpg')] bg-cover bg-center opacity-40"
-      aria-hidden="true"
-    ></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-brand-gray-900 via-brand-gray-900/90 to-brand-gray-900/55" aria-hidden="true"></div>
-    <div class="section-shell relative py-16 md:py-24">
-      <div class="max-w-3xl">
-        <p class="section-kicker text-brand-yellow/90">{SITE.city} · {SITE.province}</p>
-        <h1 class="font-display mt-4 text-4xl font-semibold leading-[1.15] md:text-5xl">
-          Tu próximo hogar en Paraná
-        </h1>
-        <p class="mt-4 max-w-2xl font-display text-lg text-brand-yellow md:text-xl">
-          {SITE.slogan}
-        </p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <ButtonLink href="/propiedades" label="Explorar propiedades" />
-          <ButtonLink href={wspGeneral} label="Consultar por WhatsApp" variant="ghost" external />
-        </div>
-      </div>
-    </div>
-  </section>
+  <PropertyHeroSlider properties={heroSlides} />
 
   <section class="border-b border-brand-gray-200 bg-white py-6 md:py-7">
     <div class="section-shell">
@@ -88,7 +66,7 @@ const highlights = [
         <ButtonLink href="/propiedades" label="Ver catálogo completo" variant="secondary" />
       </div>
       <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 sm:gap-7 xl:grid-cols-3">
-        {featured.map((property) => <PropertyCard property={property} />)}
+        {featuredGrid.map((property) => <PropertyCard property={property} />)}
       </div>
     </div>
   </section>
