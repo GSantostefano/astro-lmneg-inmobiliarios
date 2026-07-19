@@ -1,3 +1,32 @@
+function digitsOnly(value: string | undefined): string {
+  return String(value ?? '').replace(/\D/g, '');
+}
+
+/** wa.me / API — fuente única: PUBLIC_WHATSAPP_NUMBER (ej. 5493434647737) */
+function resolveWhatsAppNumber(): string {
+  return digitsOnly(import.meta.env.PUBLIC_WHATSAPP_NUMBER);
+}
+
+/** Local AR sin 54 ni 9 móvil (ej. 3434647737) */
+function localPhoneFromWhatsApp(wa: string): string {
+  let local = wa;
+  if (local.startsWith('54')) local = local.slice(2);
+  if (local.startsWith('9') && local.length > 10) local = local.slice(1);
+  return local;
+}
+
+function formatPhoneDisplay(local: string): string {
+  if (local.length === 10) {
+    return `${local.slice(0, 3)} ${local.slice(3, 6)}-${local.slice(6)}`;
+  }
+  return local;
+}
+
+const whatsappNumber = resolveWhatsAppNumber();
+const phone = localPhoneFromWhatsApp(whatsappNumber);
+const phoneDisplay = phone ? formatPhoneDisplay(phone) : '';
+const phoneTel = whatsappNumber ? `+${whatsappNumber}` : '';
+
 export const SITE = {
   name: 'LM',
   subtitle: 'negocios inmobiliarios',
@@ -10,9 +39,13 @@ export const SITE = {
   country: 'Argentina',
   addressLine: 'Victoria 386 - Oficina 5',
   address: 'Victoria 386 - Oficina 5, Paraná, Entre Ríos',
-  phone: '3434647737',
-  phoneDisplay: '3434647737',
-  whatsappNumber: import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '5493434647737',
+  /** Número internacional sin + (desde PUBLIC_WHATSAPP_NUMBER) */
+  whatsappNumber,
+  /** Teléfono local para mostrar (derivado del WhatsApp) */
+  phone,
+  phoneDisplay,
+  /** tel: link internacional (+549…) */
+  phoneTel,
   email: 'contacto@lmneginmobiliarios.com.ar',
   logoSrc: '/logo-lm.jpg',
   instagramUrl: 'https://www.instagram.com/lmneginmobiliarios/',

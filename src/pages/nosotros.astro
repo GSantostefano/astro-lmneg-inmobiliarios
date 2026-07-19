@@ -2,8 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
 import { SITE } from '../config/site';
-
-const phoneTel = `+54${SITE.phone}`;
 ---
 
 <BaseLayout title={`Nosotros | ${SITE.name}`} description={`Conocé a ${SITE.name}, ${SITE.subtitle} en Paraná.`}>
@@ -53,7 +51,7 @@ const phoneTel = `+54${SITE.phone}`;
       <p class="text-sm font-semibold text-brand-gray-900">Oficina</p>
       <p class="mt-1 text-brand-gray-700">{SITE.address}</p>
       <p class="mt-2 text-sm text-brand-gray-600">
-        <a href={`tel:${phoneTel}`} class="font-medium text-brand-gray-900 no-underline hover:underline">
+        <a href={`tel:${SITE.phoneTel}`} class="font-medium text-brand-gray-900 no-underline hover:underline">
           {SITE.phoneDisplay}
         </a>
       </p>

@@ -14,7 +14,7 @@ id = "c167d2137d65426db48162039d5afcce"
 
 [vars]
 # URL pública del back (túnel cloudflared → localhost:3020). Cambia al reiniciar el túnel.
-PUBLIC_API_URL = "https://REEMPLAZAR-CON-TUNNEL.trycloudflare.com"
+PUBLIC_API_URL = "https://naturals-heat-transcript-meetup.trycloudflare.com"
 PUBLIC_WHATSAPP_NUMBER = "5493434647737"
 
 # URL del deploy: https://astro-lmneg-inmobiliarios.gabrielsantostefano.workers.dev
