@@ -53,9 +53,8 @@ const ogImageUrl = new URL(ogImage, Astro.site);
 <style is:global>
   h1,
   h2,
-  h3,
-  .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
+  h3 {
+    font-family: var(--font-display);
     font-weight: 600;
   }
 </style>

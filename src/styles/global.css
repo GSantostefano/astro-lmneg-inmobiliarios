@@ -5,6 +5,8 @@
 @import 'tailwindcss';
 
 @theme {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'DM Sans Variable', system-ui, sans-serif;
   --color-brand-yellow: #f5c518;
   --color-brand-yellow-dark: #d4a80f;
   --color-brand-yellow-soft: #fff9e6;
@@ -21,24 +23,29 @@ html {
 }
 
 body {
-  @apply bg-white text-brand-gray-900 antialiased;
-  font-family: 'DM Sans Variable', system-ui, sans-serif;
+  @apply overflow-x-hidden bg-white font-sans text-brand-gray-900 antialiased;
 }
 
-.section-shell {
-  @apply mx-auto max-w-6xl px-5;
-}
+@layer components {
+  .section-shell {
+    @apply mx-auto w-full max-w-6xl px-8 sm:px-10 md:px-12 lg:px-14;
+  }
 
-.section-title {
-  @apply font-display text-3xl font-semibold tracking-tight text-brand-gray-900 md:text-4xl;
-}
+  .page-wrap {
+    @apply mx-auto w-full max-w-6xl px-8 sm:px-10 md:px-12 lg:px-14;
+  }
 
-.section-kicker {
-  @apply text-xs font-semibold uppercase tracking-[0.2em] text-brand-gray-500;
-}
+  .section-title {
+    @apply font-display text-3xl font-semibold tracking-tight text-brand-gray-900 md:text-4xl;
+  }
 
-.card-premium {
-  @apply overflow-hidden rounded-2xl border border-brand-gray-200/80 bg-white shadow-[0_8px_30px_rgba(26,24,22,0.06)];
+  .section-kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.2em] text-brand-gray-500;
+  }
+
+  .card-premium {
+    @apply overflow-hidden rounded-2xl border border-brand-gray-200/80 bg-white shadow-[0_8px_30px_rgba(26,24,22,0.06)];
+  }
 }
 
 :focus-visible {

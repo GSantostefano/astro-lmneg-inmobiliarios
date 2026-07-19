@@ -2,6 +2,7 @@
 import ListingImage from './ListingImage.astro';
 import type { Property } from '../data/properties';
 import { formatPrice, formatPropertyMeta, operationLabel, typeLabel } from '../lib/properties';
+import { buildPropertyWhatsAppLink } from '../lib/whatsapp';
 
 interface Props {
   property: Property;
@@ -9,10 +10,15 @@ interface Props {
 }
 
 const { property, filterIndex } = Astro.props;
+const wspHref = buildPropertyWhatsAppLink(
+  property.title,
+  operationLabel(property.operation),
+  property.refCode,
+);
 ---
 
 <article
-  class="property-card group card-premium transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(26,24,22,0.12)]"
+  class="property-card overflow-hidden rounded-2xl border border-brand-gray-200 bg-white shadow-sm transition hover:shadow-md"
   data-index={filterIndex}
   data-operation={property.operation}
   data-type={property.type}
@@ -21,37 +27,45 @@ const { property, filterIndex } = Astro.props;
   data-price={property.price}
   data-rooms={property.rooms}
 >
-  <a href={`/propiedades/${property.slug}`} class="relative block overflow-hidden no-underline">
+  <a href={`/propiedades/${property.slug}`} class="block no-underline">
     <ListingImage
       src={property.heroImage}
       alt={property.title}
       width={640}
       height={380}
       loading="lazy"
-      class="h-56 w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+      class="h-40 w-full object-cover sm:h-44"
     />
-    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-gray-900/70 to-transparent px-5 pb-4 pt-16">
-      <p class="text-xs font-medium uppercase tracking-wider text-white/80">{property.neighborhood}</p>
-      <p class="font-display text-lg font-semibold text-white">{formatPrice(property.price, property.currency)}</p>
-    </div>
-    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-gray-900 shadow-sm">
-      {operationLabel(property.operation)}
-    </span>
   </a>
-  <div class="p-5">
-    <p class="text-xs font-medium uppercase tracking-wide text-brand-gray-500">{typeLabel(property.type)}</p>
-    <h3 class="mt-1 font-display text-xl font-semibold leading-snug text-brand-gray-900">
-      <a href={`/propiedades/${property.slug}`} class="no-underline transition hover:text-brand-gray-700">
+  <div class="p-4">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="rounded-full bg-brand-yellow px-2 py-0.5 text-[10px] font-semibold uppercase text-brand-gray-900">
+        {operationLabel(property.operation)}
+      </span>
+      <span class="text-[11px] font-medium text-brand-gray-500">{typeLabel(property.type)}</span>
+    </div>
+    <h3 class="mt-2 line-clamp-2 font-display text-base font-bold leading-snug text-brand-gray-900">
+      <a href={`/propiedades/${property.slug}`} class="no-underline hover:text-brand-gray-700">
         {property.title}
       </a>
     </h3>
-    <p class="mt-2 text-sm text-brand-gray-500">{formatPropertyMeta(property)}</p>
-    <p class="mt-3 text-xs text-brand-gray-400">Ref. {property.refCode}</p>
-    <a
-      href={`/propiedades/${property.slug}`}
-      class="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-brand-gray-200 bg-brand-gray-50 px-4 py-2.5 text-sm font-semibold text-brand-gray-900 no-underline transition hover:border-brand-gray-300 hover:bg-white"
-    >
-      Ver propiedad
-    </a>
+    <p class="mt-1 line-clamp-1 text-xs text-brand-gray-500">{formatPropertyMeta(property)}</p>
+    <p class="mt-2 text-lg font-bold text-brand-gray-900">{formatPrice(property.price, property.currency)}</p>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <a
+        href={`/propiedades/${property.slug}`}
+        class="inline-flex items-center rounded-lg bg-brand-gray-900 px-3 py-1.5 text-xs font-semibold text-white no-underline hover:bg-brand-gray-700"
+      >
+        Ver detalle
+      </a>
+      <a
+        href={wspHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-lg border border-brand-gray-200 bg-brand-gray-50 px-3 py-1.5 text-xs font-semibold text-brand-gray-900 no-underline hover:bg-brand-yellow-soft"
+      >
+        Consultar
+      </a>
+    </div>
   </div>
 </article>
